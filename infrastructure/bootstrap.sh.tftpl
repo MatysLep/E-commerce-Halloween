@@ -1,0 +1,101 @@
+#!/bin/bash
+set -euo pipefail
+dnf install -y python3.12 amazon-cloudwatch-agent
+id halloween >/dev/null 2>&1 || useradd --system --home /opt/halloween halloween
+install -d -o halloween -g halloween /opt/halloween /var/log/halloween
+aws s3 cp '${artifact_uri}' /tmp/release.tar.gz --region eu-west-3
+echo '${artifact_sha}  /tmp/release.tar.gz' | sha256sum --check
+tar -xzf /tmp/release.tar.gz -C /opt/halloween
+chown -R root:halloween /opt/halloween
+chmod -R g+rX,o-rwx /opt/halloween
+cat > /etc/halloween.env <<'ENVIRONMENT'
+%{ for key, value in environment ~}
+${key}=${value}
+%{ endfor ~}
+ENVIRONMENT
+chmod 640 /etc/halloween.env
+chown root:halloween /etc/halloween.env
+
+cat > /opt/halloween/migrate.sh <<'MIGRATE'
+#!/bin/bash
+set -euo pipefail
+for attempt in $(seq 1 30); do
+  if result=$(aws lambda invoke --region eu-west-3 --function-name '${migration_function}' --cli-read-timeout 150 --query FunctionError --output text /tmp/halloween-migration.json); then
+    if [ "$result" = None ]; then
+      exit 0
+    fi
+  fi
+  echo "Migration not ready, attempt $attempt"
+  sleep 5
+done
+exit 1
+MIGRATE
+chmod 750 /opt/halloween/migrate.sh
+chown root:halloween /opt/halloween/migrate.sh
+
+cat > /etc/systemd/system/halloween-migrate.service <<'UNIT'
+[Unit]
+Description=Halloween schema migration and initial catalogue
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+User=halloween
+WorkingDirectory=/opt/halloween
+EnvironmentFile=/etc/halloween.env
+ExecStart=/opt/halloween/migrate.sh
+TimeoutStartSec=600
+RemainAfterExit=yes
+StandardOutput=append:/var/log/halloween/migrate.log
+StandardError=append:/var/log/halloween/migrate.log
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+for component in api publisher; do
+  if [ "$component" = api ]; then
+    command='/usr/bin/python3.12 -m uvicorn shop.api:create_app --factory --host 0.0.0.0 --port 8000 --no-access-log'
+  else
+    command='/usr/bin/python3.12 -m shop.publisher'
+  fi
+  cat > "/etc/systemd/system/halloween-$component.service" <<UNIT
+[Unit]
+Description=Halloween $component
+After=network-online.target halloween-migrate.service
+Requires=halloween-migrate.service
+[Service]
+User=halloween
+WorkingDirectory=/opt/halloween
+EnvironmentFile=/etc/halloween.env
+ExecStart=$command
+Restart=always
+RestartSec=5
+TimeoutStopSec=40
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+StandardOutput=append:/var/log/halloween/$component.log
+StandardError=append:/var/log/halloween/$component.log
+[Install]
+WantedBy=multi-user.target
+UNIT
+done
+
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'LOGS'
+{"logs":{"logs_collected":{"files":{"collect_list":[{"file_path":"/var/log/halloween/api.log","log_group_name":"${log_group}","log_stream_name":"{instance_id}/api"},{"file_path":"/var/log/halloween/publisher.log","log_group_name":"${log_group}","log_stream_name":"{instance_id}/publisher"},{"file_path":"/var/log/halloween/migrate.log","log_group_name":"${log_group}","log_stream_name":"{instance_id}/migrate"}]}}}}
+LOGS
+cat > /etc/logrotate.d/halloween <<'LOGROTATE'
+/var/log/halloween/*.log {
+  daily
+  rotate 7
+  size 10M
+  copytruncate
+  compress
+  missingok
+  notifempty
+}
+LOGROTATE
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
+systemctl daemon-reload
+systemctl enable --now halloween-migrate halloween-api halloween-publisher

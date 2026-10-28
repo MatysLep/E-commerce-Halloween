@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars, then supply your own values.
+# This AWS architecture has running costs. Local Docker mode needs no AWS account.
+project_name         = "halloween-shop"
+sender_email         = "shop@example.com"
+alarm_emails         = ["member1@example.com", "member2@example.com", "member3@example.com"]
+high_availability    = false
+enable_waf           = true
+deletion_protection  = true
+monthly_budget_usd   = 20

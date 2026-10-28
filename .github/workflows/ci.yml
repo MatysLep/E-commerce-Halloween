@@ -1,0 +1,51 @@
+name: Validate hybrid shop
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: halloween
+          POSTGRES_PASSWORD: local-only-password
+          POSTGRES_DB: halloween
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U halloween -d halloween"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://halloween:local-only-password@127.0.0.1:5432/halloween
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.16.4'
+      - run: make install
+      - run: npm ci
+      - run: make check
+      - run: make build
+      - run: terraform -chdir=infrastructure init -backend=false -input=false
+      - run: terraform -chdir=infrastructure validate
+      - run: terraform -chdir=infrastructure test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aws-release
+          path: |
+            build/release.tar.gz
+            build/lambda.zip
+          retention-days: 7

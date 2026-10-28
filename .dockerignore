@@ -1,0 +1,9 @@
+.git
+.venv
+.env
+build
+node_modules
+*.db
+**/__pycache__
+infrastructure/.terraform
+infrastructure/*.tfstate*
