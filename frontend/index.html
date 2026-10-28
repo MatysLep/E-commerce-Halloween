@@ -21,81 +21,86 @@
       <a class="brand" href="/" aria-label="Minuit, accueil">minuit<span>✦</span></a>
       <nav aria-label="Navigation principale">
         <a href="#catalogue">La collection</a>
-        <a href="#orders">Mes commandes</a>
+        <a href="/orders.html">Mes commandes</a>
         <button id="login" class="text-button">Se connecter</button>
         <a class="bag-link" href="#basket">Panier <span id="cart-count">0</span></a>
       </nav>
     </header>
     <main>
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">LES PETITES PEURS FONT LES GRANDES FÊTES</p>
-          <h1 id="hero-title">Un peu de magie.<br />Un soupçon de <em>frisson.</em></h1>
-          <p>
-            Tout ce qu’il faut pour transformer une soirée d’octobre en un souvenir délicieusement
-            étrange.
-          </p>
-          <a href="#catalogue" class="button dark">Explorer la collection <span>↗</span></a>
-          <p class="hero-footnote">Objets malicieux · Douceurs ensorcelées · Esprit de fête</p>
-        </div>
-        <div class="hero-art" aria-hidden="true">
-          <span class="art-star one">✦</span><span class="art-star two">✧</span>
-          <div class="moon"></div>
-          <span class="ghost">👻</span><span class="pumpkin">🎃</span>
-          <div class="art-label">LE RENDEZ-VOUS<br /><strong>du 31 octobre</strong></div>
-        </div>
-      </section>
-      <div class="demo-note" id="demo-note">
-        Boutique de démonstration : aucun paiement ni envoi physique.
-      </div>
-      <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
-      <section class="shop-section" id="catalogue" aria-labelledby="catalogue-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">LE CABINET DE CURIOSITÉS</p>
-            <h2 id="catalogue-title">Préparez votre nuit.</h2>
-          </div>
-          <span id="product-count"></span>
-        </div>
-        <div id="filters" class="filters" aria-label="Filtrer les produits"></div>
-        <div class="shop-layout">
-          <div id="products" class="product-grid" aria-live="polite">
-            <p>Les curiosités arrivent…</p>
-          </div>
-          <aside id="basket" class="basket" aria-labelledby="basket-title">
-            <div class="basket-heading">
-              <h2 id="basket-title">Votre butin</h2>
-              <span aria-hidden="true">✦</span>
-            </div>
-            <p class="muted">Les bonnes soirées commencent ici.</p>
-            <div id="cart-items"></div>
-            <div class="total"><span>Total</span><strong id="cart-total">0,00 €</strong></div>
-            <button id="checkout" class="button dark full" disabled>Confirmer ma commande →</button>
-            <p class="small">
-              Aucun paiement demandé. Prix et disponibilité vérifiés à la confirmation.
+      <div id="shop-page">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">LES PETITES PEURS FONT LES GRANDES FÊTES</p>
+            <h1 id="hero-title">Un peu de magie.<br />Un soupçon de <em>frisson.</em></h1>
+            <p>
+              Tout ce qu’il faut pour transformer une soirée d’octobre en un souvenir délicieusement
+              étrange.
             </p>
-          </aside>
-        </div>
-      </section>
-      <section id="orders" class="orders-section" aria-labelledby="orders-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">DE LA BOUTIQUE À VOTRE PORTE</p>
-            <h2 id="orders-title">Le carnet des commandes.</h2>
+            <a href="#catalogue" class="button dark">Explorer la collection <span>↗</span></a>
+            <p class="hero-footnote">Objets malicieux · Douceurs ensorcelées · Esprit de fête</p>
           </div>
-          <button id="refresh-orders" class="text-button">Actualiser ↻</button>
+          <div class="hero-art" aria-hidden="true">
+            <span class="art-star one">✦</span><span class="art-star two">✧</span>
+            <div class="moon"></div>
+            <span class="ghost">👻</span><span class="pumpkin">🎃</span>
+            <div class="art-label">LE RENDEZ-VOUS<br /><strong>du 31 octobre</strong></div>
+          </div>
+        </section>
+        <div class="demo-note" id="demo-note">
+          Boutique de démonstration : aucun paiement ni envoi physique.
         </div>
-        <p class="muted">
-          Suivez la confirmation, l’emballage et l’expédition simulée de votre butin.
-        </p>
-        <div id="order-list"><p>Connectez-vous pour retrouver vos commandes.</p></div>
-        <button id="more-orders" class="text-button" hidden>Voir les commandes précédentes</button>
-        <dialog id="order-dialog">
-          <button id="close-dialog" class="text-button">Fermer ×</button>
-          <div id="order-detail"></div>
-        </dialog>
-      </section>
+        <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
+        <section class="shop-section" id="catalogue" aria-labelledby="catalogue-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">LE CABINET DE CURIOSITÉS</p>
+              <h2 id="catalogue-title">Préparez votre nuit.</h2>
+            </div>
+            <span id="product-count"></span>
+          </div>
+          <div id="filters" class="filters" aria-label="Filtrer les produits"></div>
+          <div class="shop-layout">
+            <div id="products" class="product-grid" aria-live="polite">
+              <p>Les curiosités arrivent…</p>
+            </div>
+            <aside id="basket" class="basket" aria-labelledby="basket-title">
+              <div class="basket-heading">
+                <h2 id="basket-title">Votre butin</h2>
+                <span aria-hidden="true">✦</span>
+              </div>
+              <p class="muted">Les bonnes soirées commencent ici.</p>
+              <div id="cart-items"></div>
+              <div class="total"><span>Total</span><strong id="cart-total">0,00 €</strong></div>
+              <button id="checkout" class="button dark full" disabled>
+                Confirmer ma commande →
+              </button>
+              <p class="small">
+                Aucun paiement demandé. Prix et disponibilité vérifiés à la confirmation.
+              </p>
+            </aside>
+          </div>
+        </section>
+      </div>
     </main>
+    <dialog id="confirmation-dialog" aria-labelledby="confirmation-title">
+      <button
+        class="text-button modal-close"
+        id="close-confirmation"
+        aria-label="Fermer la confirmation"
+      >
+        Fermer ×
+      </button>
+      <div class="confirmation-icon" aria-hidden="true">✓</div>
+      <p class="eyebrow">LE SORT EST JETÉ</p>
+      <h2 id="confirmation-title">Merci pour votre commande !</h2>
+      <p id="confirmation-summary"></p>
+      <div id="confirmation-lines" class="confirmation-lines"></div>
+      <p class="muted">
+        Votre butin se prépare. Retrouvez toutes les étapes dans votre carnet de commandes.
+      </p>
+      <a class="button dark full" href="/orders.html">Suivre ma commande →</a>
+      <button id="continue-shopping" class="text-button">Continuer mes découvertes</button>
+    </dialog>
     <footer>
       <a class="brand" href="/">minuit<span>✦</span></a>
       <p>De petites frayeurs, de grands souvenirs.</p>

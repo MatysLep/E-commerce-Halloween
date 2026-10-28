@@ -16,11 +16,15 @@ def jwks_client(issuer: str):
     return jwt.PyJWKClient(f"{issuer}/.well-known/jwks.json", timeout=5)
 
 
-def authenticate(settings: Settings, authorization: str | None) -> Customer:
+def authenticate(settings: Settings, authorization: str | None, factory=None) -> Customer:
     if settings.environment in {"local", "test"}:
         if authorization == "Bearer local-demo":
             return Customer("local-demo", "demo@example.com")
-        raise HTTPException(401, "Connectez-vous au compte de démonstration.")
+        if factory and authorization and authorization.startswith("Bearer "):
+            from shop.local_accounts import authenticate_local
+
+            return authenticate_local(factory, authorization.removeprefix("Bearer "))
+        raise HTTPException(401, "Connectez-vous pour continuer.")
     if not settings.user_pool_id or not settings.client_id:
         raise HTTPException(503, "Authentification non configurée.")
     if not authorization or not authorization.startswith("Bearer "):

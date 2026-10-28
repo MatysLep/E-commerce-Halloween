@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#171d19" />
+    <meta
+      name="description"
+      content="La petite boutique des grandes frayeurs. Décorations, costumes et gourmandises d’Halloween."
+    />
+    <title>Mon compte — Minuit</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/config.js"></script>
+    <script type="module" src="/account.js"></script>
+  </head>
+  <body>
+    <div class="announcement">
+      LA SAISON DES FRISSONS EST OUVERTE <span>✦</span> COLLECTION HALLOWEEN
+    </div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Minuit, accueil">minuit<span>✦</span></a>
+      <nav aria-label="Navigation principale">
+        <a href="/#catalogue">La collection</a>
+        <a href="/orders.html">Mes commandes</a>
+        <button id="login" class="text-button">Se connecter</button>
+        <a class="bag-link" href="/#basket">Panier <span id="cart-count">0</span></a>
+      </nav>
+    </header>
+    <main class="account-page">
+      <a class="back-link" href="/#catalogue">← Retour à la collection</a>
+      <section class="account-layout" aria-labelledby="account-title">
+        <div class="account-story">
+          <p class="eyebrow">BIENVENUE DANS LE CERCLE</p>
+          <h1>Vos petites peurs.<br />Votre <em>grand soir.</em></h1>
+          <p>
+            Un compte, et toute la magie de Minuit : votre collection préférée, votre panier et le
+            suivi de vos commandes.
+          </p>
+          <img
+            src="/images/citrouille.jpg"
+            alt="Citrouille illuminée pour Halloween"
+            width="800"
+            height="600"
+          />
+        </div>
+        <div class="account-card">
+          <div class="account-tabs" aria-label="Accès au compte">
+            <button id="signin-tab" class="filter active" type="button" aria-pressed="true">
+              Connexion
+            </button>
+            <button id="signup-tab" class="filter" type="button" aria-pressed="false">
+              Inscription
+            </button>
+          </div>
+          <h2 id="account-title">Heureux de vous revoir.</h2>
+          <p id="account-intro" class="muted">Entrez dans votre petit monde d’Halloween.</p>
+          <div id="auth-message" role="status" aria-live="polite" hidden></div>
+          <form id="account-form">
+            <label for="email">Adresse e-mail</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              placeholder="vous@exemple.fr"
+              required
+              maxlength="320"
+            />
+            <div id="password-field">
+              <label for="password">Mot de passe</label>
+              <div class="password-input">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  id="toggle-password"
+                  type="button"
+                  aria-label="Afficher le mot de passe"
+                  aria-pressed="false"
+                >
+                  Voir
+                </button>
+              </div>
+              <p id="password-help" class="small" hidden>
+                12 caractères minimum, avec majuscule, minuscule, chiffre et symbole.
+              </p>
+            </div>
+            <div id="confirmation-field" hidden>
+              <label for="password-confirm">Confirmer le mot de passe</label>
+              <input id="password-confirm" type="password" autocomplete="new-password" />
+            </div>
+            <div id="code-field" hidden>
+              <label for="verification-code">Code reçu par e-mail</label>
+              <input
+                id="verification-code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                placeholder="123456"
+              />
+            </div>
+            <button id="auth-submit" class="button dark full" type="submit">Se connecter →</button>
+          </form>
+          <button id="resend-code" class="text-button" hidden>Renvoyer le code</button>
+          <button id="hosted-login" class="text-button">Autre méthode de connexion</button>
+          <div id="local-account-note" class="local-account-note" hidden>
+            <p>
+              Envie d’un aperçu rapide ? Le compte démo vous permet aussi d’explorer la boutique
+              sans inscription.
+            </p>
+            <button id="demo-login" class="button dark full">Entrer avec le compte démo →</button>
+          </div>
+          <p class="small">Votre panier vous attend après la connexion.</p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <a class="brand" href="/">minuit<span>✦</span></a>
+      <p>De petites frayeurs, de grands souvenirs.</p>
+      <span>Projet pédagogique · Halloween</span>
+    </footer>
+  </body>
+</html>

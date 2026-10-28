@@ -24,10 +24,14 @@ def main():
         "apiBase": "",
         "cognitoDomain": outputs["cognito_domain"],
         "clientId": outputs["cognito_client_id"],
+        "region": "eu-west-3",
     }
     s3 = boto3.client("s3", region_name="eu-west-3")
-    for path in sorted((ROOT / "frontend").iterdir()):
-        if path.suffix not in {".html", ".css", ".js", ".mjs"} or path.name == "config.local.js":
+    for path in sorted((ROOT / "frontend").rglob("*")):
+        if (
+            path.suffix not in {".html", ".css", ".js", ".mjs", ".jpg", ".webp", ".png"}
+            or path.name == "config.local.js"
+        ):
             continue
         content = path.read_bytes()
         if path.name == "config.js":
@@ -37,9 +41,11 @@ def main():
         )
         s3.put_object(
             Bucket=outputs["frontend_bucket"],
-            Key=path.name,
+            Key=str(path.relative_to(ROOT / "frontend")),
             Body=content,
-            ContentType=f"{mime_type}; charset=utf-8",
+            ContentType=mime_type
+            if path.suffix in {".jpg", ".webp", ".png"}
+            else f"{mime_type}; charset=utf-8",
             CacheControl="public,max-age=60",
         )
     boto3.client("cloudfront").create_invalidation(

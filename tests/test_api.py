@@ -8,7 +8,7 @@ def test_catalogue_and_health_are_public(client):
     assert client.get("/api/health").json() == {"status": "ok"}
     response = client.get("/api/products")
     assert response.status_code == 200
-    assert len(response.json()) == 6
+    assert len(response.json()) == 12
     assert response.headers["cache-control"] == "no-store"
 
 

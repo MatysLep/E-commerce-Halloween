@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#171d19" />
+    <meta
+      name="description"
+      content="La petite boutique des grandes frayeurs. Décorations, costumes et gourmandises d’Halloween."
+    />
+    <title>Mes commandes — Minuit</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/config.js"></script>
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <div class="announcement">
+      LA SAISON DES FRISSONS EST OUVERTE <span>✦</span> COLLECTION HALLOWEEN
+    </div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Minuit, accueil">minuit<span>✦</span></a>
+      <nav aria-label="Navigation principale">
+        <a href="/#catalogue">La collection</a>
+        <a href="/orders.html">Mes commandes</a>
+        <button id="login" class="text-button">Se connecter</button>
+        <a class="bag-link" href="/#basket">Panier <span id="cart-count">0</span></a>
+      </nav>
+    </header>
+    <main>
+      <div id="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
+      <a class="back-link" href="/#catalogue">← Retour à la collection</a>
+      <section id="orders" class="orders-section" aria-labelledby="orders-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DE LA BOUTIQUE À VOTRE PORTE</p>
+            <h1 id="orders-title">Le carnet des commandes.</h1>
+          </div>
+          <button id="refresh-orders" class="text-button">Actualiser ↻</button>
+        </div>
+        <p class="muted">
+          Suivez la confirmation, l’emballage et l’expédition simulée de votre butin.
+        </p>
+        <div id="order-list"><p>Connectez-vous pour retrouver vos commandes.</p></div>
+        <button id="more-orders" class="text-button" hidden>Voir les commandes précédentes</button>
+        <dialog id="order-dialog" aria-labelledby="order-detail-title">
+          <button id="close-dialog" class="text-button">Fermer ×</button>
+          <div id="order-detail"></div>
+        </dialog>
+      </section>
+    </main>
+    <footer>
+      <a class="brand" href="/">minuit<span>✦</span></a>
+      <p>De petites frayeurs, de grands souvenirs.</p>
+      <span>Projet pédagogique · Halloween</span>
+    </footer>
+  </body>
+</html>

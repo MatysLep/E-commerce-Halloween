@@ -1,4 +1,4 @@
-import { accessToken, finishLogin, login, logout } from "./auth.js";
+import { accessToken, finishLogin, logout } from "./auth.js";
 import { cartTotal, normalizeCart, requestKey } from "./cart.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -96,8 +96,19 @@ function renderProducts() {
   $("product-count").textContent = `${visible.length} curiosités à découvrir`;
   for (const [index, product] of visible.entries()) {
     const card = element("article", "product-card");
-    const art = element("div", `product-art tint-${index % 3}`, product.emoji);
-    art.setAttribute("aria-hidden", "true");
+    const art = element("div", `product-art tint-${index % 3}`);
+    const photo = element("img");
+    photo.src = `/images/${encodeURIComponent(product.id)}.jpg`;
+    photo.alt = product.name;
+    photo.loading = "lazy";
+    photo.decoding = "async";
+    photo.width = 800;
+    photo.height = 600;
+    photo.onerror = () => {
+      photo.remove();
+      art.append(element("span", "photo-unavailable", "Photo indisponible"));
+    };
+    art.append(photo);
     const info = element("div", "product-info");
     info.append(
       element("p", "eyebrow", product.category),
@@ -166,7 +177,9 @@ async function showOrder(id) {
   try {
     const order = await api(`/api/orders/${encodeURIComponent(id)}`);
     const detail = $("order-detail");
-    detail.replaceChildren(element("h2", "", `Commande ${id.slice(0, 8)}`));
+    const title = element("h2", "", `Commande ${id.slice(0, 8)}`);
+    title.id = "order-detail-title";
+    detail.replaceChildren(title);
     for (const line of order.lines)
       detail.append(
         element(
@@ -194,10 +207,14 @@ async function showOrder(id) {
 
 async function refreshOrders() {
   clearTimeout(refreshTimer);
+  if (!$("order-list")) return;
   if (!accessToken()) {
     $("order-list").replaceChildren(
       element("p", "", "Connectez-vous pour retrouver vos commandes."),
     );
+    const signIn = element("a", "button dark", "Se connecter →");
+    signIn.href = "/account.html?return=orders";
+    $("order-list").append(signIn);
     $("more-orders").hidden = true;
     return;
   }
@@ -233,67 +250,96 @@ async function refreshOrders() {
   }
 }
 
-$("checkout").onclick = async () => {
-  if (!accessToken()) {
-    message("Connectez-vous avant de confirmer votre commande.", true);
-    return;
-  }
-  busy = true;
-  renderCart();
-  renderProducts();
-  pending = requestKey(cart, pending);
-  localStorage.setItem("minuit-pending", JSON.stringify(pending));
-  try {
-    const order = await api("/api/orders", {
-      method: "POST",
-      headers: { "Idempotency-Key": pending.key },
-      body: JSON.stringify({ items: cart }),
-    });
-    cart = [];
-    pending = null;
-    localStorage.removeItem("minuit-pending");
-    saveCart();
-    message(
-      `Merci ! Votre commande ${order.id.slice(0, 8)} est confirmée. Retrouvez son avancement ci-dessous.`,
-    );
-    await Promise.all([loadProducts(), refreshOrders()]);
-  } catch (error) {
-    message(
-      `${error.message} Vous pouvez réessayer : un nouvel essai du même panier ne crée pas de doublon.`,
-      true,
-    );
-  } finally {
-    busy = false;
+if ($("checkout"))
+  $("checkout").onclick = async () => {
+    if (!accessToken()) {
+      location.assign("/account.html");
+      return;
+    }
+    busy = true;
     renderCart();
     renderProducts();
-  }
-};
+    pending = requestKey(cart, pending);
+    localStorage.setItem("minuit-pending", JSON.stringify(pending));
+    try {
+      const order = await api("/api/orders", {
+        method: "POST",
+        headers: { "Idempotency-Key": pending.key },
+        body: JSON.stringify({ items: cart }),
+      });
+      cart = [];
+      pending = null;
+      localStorage.removeItem("minuit-pending");
+      saveCart();
+      $("confirmation-summary").textContent =
+        `Commande n° ${order.id.slice(0, 8)} · ${money(order.total_cents)}`;
+      $("confirmation-lines").replaceChildren();
+      for (const line of order.lines) {
+        const row = element("div", "confirmation-line");
+        row.append(
+          element("span", "", `${line.quantity} × ${line.name}`),
+          element("strong", "", money(line.quantity * line.unit_price_cents)),
+        );
+        $("confirmation-lines").append(row);
+      }
+      $("confirmation-dialog").showModal();
+      // A catalogue refresh failure must not turn a successful order into an error.
+      loadProducts().catch(() =>
+        message("Commande confirmée. Le stock sera actualisé au prochain chargement."),
+      );
+    } catch (error) {
+      message(
+        `${error.message} Vous pouvez réessayer : un nouvel essai du même panier ne crée pas de doublon.`,
+        true,
+      );
+    } finally {
+      busy = false;
+      renderCart();
+      renderProducts();
+    }
+  };
 
 $("login").onclick = async () => {
-  try {
-    if (accessToken()) logout();
-    else await login();
-    $("login").textContent = accessToken() ? "Se déconnecter" : "Se connecter";
-    await refreshOrders();
-  } catch (error) {
-    message(error.message, true);
-  }
+  if (accessToken()) {
+    try {
+      await logout();
+    } catch (error) {
+      message(error.message, true);
+      return;
+    }
+    $("login").textContent = "Se connecter";
+    refreshOrders();
+  } else location.assign(`/account.html${$("order-list") ? "?return=orders" : ""}`);
 };
-$("refresh-orders").onclick = refreshOrders;
-$("more-orders").onclick = () => {
-  orderLimit = Math.min(100, orderLimit + 20);
-  refreshOrders();
-};
-$("close-dialog").onclick = () => $("order-dialog").close();
-
+if ($("refresh-orders")) $("refresh-orders").onclick = refreshOrders;
+if ($("more-orders"))
+  $("more-orders").onclick = () => {
+    orderLimit = Math.min(100, orderLimit + 20);
+    refreshOrders();
+  };
+if ($("close-dialog")) $("close-dialog").onclick = () => $("order-dialog").close();
+for (const id of ["close-confirmation", "continue-shopping"]) {
+  if ($(id)) $(id).onclick = () => $("confirmation-dialog").close();
+}
+for (const dialog of document.querySelectorAll("dialog")) {
+  dialog.addEventListener("click", (event) => {
+    const rect = dialog.getBoundingClientRect();
+    if (
+      event.target === dialog &&
+      (event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom)
+    )
+      dialog.close();
+  });
+}
 try {
   await finishLogin();
-  $("login").textContent = accessToken()
-    ? "Se déconnecter"
-    : window.SHOP_CONFIG.mode === "local"
-      ? "Compte démo"
-      : "Se connecter";
-  await Promise.all([loadProducts(), refreshOrders()]);
+  $("login").textContent = accessToken() ? "Se déconnecter" : "Se connecter";
+  $("cart-count").textContent = cart.reduce((count, item) => count + item.quantity, 0);
+  if ($("products")) await loadProducts();
+  else await refreshOrders();
 } catch (error) {
   message(error.message, true);
 }

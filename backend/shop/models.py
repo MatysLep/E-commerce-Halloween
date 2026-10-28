@@ -87,3 +87,17 @@ class Receipt(Base):
     consumer: Mapped[str] = mapped_column(String(40), primary_key=True)
     event_id: Mapped[str] = mapped_column(ForeignKey("events.id"), primary_key=True)
     processed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class LocalAccount(Base):
+    __tablename__ = "local_accounts"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    email: Mapped[str] = mapped_column(String(320), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(200))
+
+
+class LocalSession(Base):
+    __tablename__ = "local_sessions"
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[str] = mapped_column(ForeignKey("local_accounts.id"))
+    expires_at: Mapped[int]

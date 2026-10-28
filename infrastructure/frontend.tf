@@ -41,7 +41,7 @@ resource "aws_cloudfront_response_headers_policy" "security" {
       override                   = true
     }
     content_security_policy {
-      content_security_policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://${aws_cognito_user_pool_domain.customers.domain}.auth.eu-west-3.amazoncognito.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+      content_security_policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://cognito-idp.eu-west-3.amazonaws.com https://${aws_cognito_user_pool_domain.customers.domain}.auth.eu-west-3.amazoncognito.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
       override                = true
     }
   }
@@ -132,6 +132,7 @@ resource "aws_cognito_user_pool_domain" "customers" {
 resource "aws_cognito_user_pool_client" "web" {
   name                                 = "${local.name}-web"
   user_pool_id                         = aws_cognito_user_pool.customers.id
+  explicit_auth_flows                  = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
   generate_secret                      = false
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
