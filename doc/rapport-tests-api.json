@@ -1,0 +1,305 @@
+{
+  "site": "https://d16osreerzkx1z.cloudfront.net",
+  "timestamp_utc": "2026-10-29T14:19:17Z",
+  "results": [
+    {
+      "test": "Santé SQL",
+      "success": true,
+      "detail": "GET /api/health: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Base disponible",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Catalogue public",
+      "success": true,
+      "detail": "GET /api/products: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Catalogue complet",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Cache API désactivé",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Schéma OpenAPI",
+      "success": true,
+      "detail": "GET /api/openapi.json: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Ressource /",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /account.html",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /orders.html",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /config.js",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /app.js",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /auth.js",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Ressource /account.js",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Accès anonyme refusé /api/me",
+      "success": true,
+      "detail": "GET /api/me: HTTP 401, attendu 401"
+    },
+    {
+      "test": "Accès anonyme refusé /api/orders",
+      "success": true,
+      "detail": "GET /api/orders: HTTP 401, attendu 401"
+    },
+    {
+      "test": "Accès anonyme refusé /api/orders/not-an-order",
+      "success": true,
+      "detail": "GET /api/orders/not-an-order: HTTP 401, attendu 401"
+    },
+    {
+      "test": "Commande anonyme refusée",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 401, attendu 401"
+    },
+    {
+      "test": "Jeton invalide refusé",
+      "success": true,
+      "detail": "GET /api/me: HTTP 401, attendu 401"
+    },
+    {
+      "test": "Connexion Cognito client 1",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Profil connecté client 1",
+      "success": true,
+      "detail": "GET /api/me: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Connexion Cognito client 2",
+      "success": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "test": "Profil connecté client 2",
+      "success": true,
+      "detail": "GET /api/me: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Historique initial",
+      "success": true,
+      "detail": "GET /api/orders?limit=20: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Clé obligatoire",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 422, attendu 422"
+    },
+    {
+      "test": "Panier vide refusé",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 422, attendu 422"
+    },
+    {
+      "test": "Quantité invalide refusée",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 422, attendu 422"
+    },
+    {
+      "test": "Prix forgé refusé",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 422, attendu 422"
+    },
+    {
+      "test": "Pagination invalide refusée",
+      "success": true,
+      "detail": "GET /api/orders?limit=101: HTTP 422, attendu 422"
+    },
+    {
+      "test": "Produit absent refusé",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 404, attendu 404"
+    },
+    {
+      "test": "Création commande",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 201, attendu 201"
+    },
+    {
+      "test": "Montant calculé serveur",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Rejeu même panier",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 201, attendu 201"
+    },
+    {
+      "test": "Aucun doublon",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Conflit clé autre panier",
+      "success": true,
+      "detail": "POST /api/orders: HTTP 409, attendu 409"
+    },
+    {
+      "test": "Stock après commande",
+      "success": true,
+      "detail": "GET /api/products: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Stock décrémenté une seule fois",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Historique client",
+      "success": true,
+      "detail": "GET /api/orders?limit=20: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Commande dans historique",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Détail commande",
+      "success": true,
+      "detail": "GET /api/orders/4e200b2d-6eb9-4a0a-aca0-42e1d197426f: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Commande étrangère masquée",
+      "success": true,
+      "detail": "GET /api/orders/4e200b2d-6eb9-4a0a-aca0-42e1d197426f: HTTP 404, attendu 404"
+    },
+    {
+      "test": "Historique autre client",
+      "success": true,
+      "detail": "GET /api/orders: HTTP 200, attendu 200"
+    },
+    {
+      "test": "Isolation entre clients",
+      "success": true,
+      "detail": ""
+    },
+    {
+      "test": "Chaîne asynchrone jusqu’à SHIPPED",
+      "success": true,
+      "detail": "SHIPPED"
+    },
+    {
+      "test": "Historique des trois événements",
+      "success": true,
+      "detail": "CommandeCreee, EmballageTermine, ExpeditionTerminee"
+    },
+    {
+      "test": "Cognito SignUp",
+      "success": true,
+      "detail": "HTTP 200; OK"
+    },
+    {
+      "test": "Cognito ResendConfirmationCode",
+      "success": true,
+      "detail": "HTTP 200; OK"
+    },
+    {
+      "test": "Cognito ConfirmSignUp",
+      "success": true,
+      "detail": "HTTP 400; CodeMismatchException"
+    },
+    {
+      "test": "Notification SES",
+      "success": true,
+      "detail": "Expéditeur SES Success ; deux event_processed consumer=notification observés à 14:28:06 et 14:28:44 UTC le 29/10/2026, pour les deux commandes de test."
+    },
+    {
+      "test": "Jeton révoqué refusé",
+      "success": true,
+      "detail": "HTTP 401 après AdminUserGlobalSignOut"
+    }
+  ],
+  "test_users_pending_cleanup": [],
+  "browser_checks": [
+    "Catalogue chargé",
+    "Connexion via formulaire Cognito",
+    "Panier et création de commande 7e1d2127",
+    "Historique des deux commandes",
+    "Détail avec trois événements et statut Expédiée",
+    "Déconnexion avec retour à la boutique",
+    "Connexion Cognito hébergée : autorisation OAuth, code PKCE, échange de jeton, retour au site et chargement des commandes",
+    "Déconnexion après OAuth"
+  ],
+  "local_tests": {
+    "pytest_passed": 34,
+    "pytest_skipped": 31,
+    "javascript_passed": 3,
+    "note": "PostgreSQL non configuré localement ; les tests AWS ci-dessus ont utilisé le vrai RDS."
+  },
+  "limitations": [
+    "Confirmation Cognito avec un code réellement reçu non testée : les comptes de parcours ont été créés et validés administrativement pour éviter une dépendance à une boîte personnelle.",
+    "Les deux envois SES de test ont été acceptés vers le simulateur AWS ; la réception dans une boîte réelle n’a pas été mesurée. Le compte reste en sandbox SES : les autres destinataires doivent être vérifiés."
+  ],
+  "test_orders": [
+    {
+      "id": "7e1d2127-586c-4ff8-bdb2-056dd2f6a6bb",
+      "status": "SHIPPED",
+      "total_cents": 890
+    },
+    {
+      "id": "4e200b2d-6eb9-4a0a-aca0-42e1d197426f",
+      "status": "SHIPPED",
+      "total_cents": 1890
+    }
+  ],
+  "cleanup": {
+    "temporary_cognito_users_deleted": 3,
+    "orders_retained": 2,
+    "stock_effect": {
+      "citrouille": -1,
+      "bonbons": -1
+    },
+    "pending_test_notifications": 0
+  },
+  "ses_resolution": {
+    "sender_status": "Success",
+    "notification_orders": [
+      "4e200b2d-6eb9-4a0a-aca0-42e1d197426f",
+      "7e1d2127-586c-4ff8-bdb2-056dd2f6a6bb"
+    ],
+    "queue_visible": 0,
+    "queue_inflight": 0,
+    "dlq_visible": 0,
+    "dlq_inflight": 0,
+    "retry": "automatic"
+  }
+}

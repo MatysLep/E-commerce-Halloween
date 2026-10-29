@@ -3,11 +3,14 @@ terraform {
   required_providers {
     aws    = { source = "hashicorp/aws", version = "~> 6.0" }
     random = { source = "hashicorp/random", version = "~> 3.7" }
+    time   = { source = "hashicorp/time", version = "~> 0.13" }
   }
 }
 
 provider "aws" {
-  region = "eu-west-3"
+  region              = "eu-west-3"
+  profile             = var.aws_profile
+  allowed_account_ids = var.expected_account_id == null ? null : [var.expected_account_id]
   default_tags {
     tags = { Project = var.project_name, ManagedBy = "Terraform" }
   }
@@ -15,8 +18,10 @@ provider "aws" {
 
 # CloudFront WAF is a global resource managed through us-east-1.
 provider "aws" {
-  alias  = "global"
-  region = "us-east-1"
+  alias               = "global"
+  region              = "us-east-1"
+  profile             = var.aws_profile
+  allowed_account_ids = var.expected_account_id == null ? null : [var.expected_account_id]
 }
 
 data "aws_caller_identity" "current" {}

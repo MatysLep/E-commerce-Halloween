@@ -1,9 +1,16 @@
 # Copy to terraform.tfvars, then supply your own values.
 # This AWS architecture has running costs. Local Docker mode needs no AWS account.
+# Recommended: pin the intended profile and account before the first plan.
+# aws_profile         = "my-training-profile"
+# expected_account_id = "123456789012"
 project_name         = "halloween-shop"
 sender_email         = "shop@example.com"
 alarm_emails         = ["member1@example.com", "member2@example.com", "member3@example.com"]
 high_availability    = false
 enable_waf           = true
-deletion_protection  = true
+# Demo teardown removes data permanently. Set true to enable retention/protection.
+deletion_protection  = false
 monthly_budget_usd   = 20
+
+# Enable only when the regional Lambda quota supports 7 reserved executions.
+enable_lambda_reserved_concurrency = false

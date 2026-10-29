@@ -52,6 +52,8 @@ resource "aws_cloudfront_distribution" "site" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
+  retain_on_delete    = false
+  wait_for_deployment = true
   web_acl_id          = var.enable_waf ? aws_wafv2_web_acl.edge[0].arn : null
   origin {
     domain_name              = aws_s3_bucket.private["frontend"].bucket_regional_domain_name

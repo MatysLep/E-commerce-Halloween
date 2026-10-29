@@ -11,9 +11,9 @@ from shop.orders import append_event
 
 logger = logging.getLogger(__name__)
 ROUTES = {
-    "packing": EventType.ORDER_CREATED,
-    "shipping": EventType.ORDER_PACKED,
-    "notification": EventType.ORDER_CREATED,
+    "packing": (EventType.ORDER_CREATED,),
+    "shipping": (EventType.ORDER_PACKED,),
+    "notification": (EventType.ORDER_CREATED, EventType.ORDER_SHIPPED),
 }
 TRANSITIONS = {
     "packing": (OrderStatus.CONFIRMED, OrderStatus.PACKED, EventType.ORDER_PACKED),
@@ -36,7 +36,7 @@ def process_event(session, consumer: str, message: dict, send_email: Callable) -
     if consumer not in ROUTES or message.get("schema_version") != 1:
         raise ValueError("Unknown consumer or unsupported event schema")
     event = session.get(Event, message["event_id"])
-    if not event or event.type != ROUTES[consumer] or message.get("type") != event.type:
+    if not event or event.type not in ROUTES[consumer] or message.get("type") != event.type:
         raise ValueError("Event does not match the expected durable event")
     if message.get("order_id") != event.order_id:
         raise ValueError("Order does not match durable event")
@@ -46,7 +46,8 @@ def process_event(session, consumer: str, message: dict, send_email: Callable) -
         return
     if consumer == "notification":
         # SES and SQL cannot commit atomically. A crash after SES can duplicate an email.
-        send_email(order)
+        # Use the durable event: confirmation can arrive after the order has shipped.
+        send_email(order, EventType(event.type))
     else:
         expected, target, outgoing = TRANSITIONS[consumer]
         if order.status != expected:

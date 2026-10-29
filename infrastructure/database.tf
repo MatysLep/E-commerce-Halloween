@@ -8,8 +8,9 @@ resource "random_password" "database_application" {
   special = false
 }
 resource "aws_secretsmanager_secret" "application" {
-  name                    = "${local.name}-database-app-${random_id.suffix.hex}"
-  recovery_window_in_days = 7
+  # AWS releases deleted secret names asynchronously, even without recovery.
+  name_prefix             = "${local.name}-database-app-"
+  recovery_window_in_days = var.deletion_protection ? 7 : 0
 }
 resource "aws_secretsmanager_secret_version" "application" {
   secret_id = aws_secretsmanager_secret.application.id
@@ -23,8 +24,9 @@ resource "aws_db_parameter_group" "main" {
   name   = local.name
   family = "postgres16"
   parameter {
-    name  = "rds.force_ssl"
-    value = "1"
+    name         = "rds.force_ssl"
+    value        = "1"
+    apply_method = "pending-reboot"
   }
 }
 
@@ -50,7 +52,8 @@ resource "aws_db_instance" "main" {
   maintenance_window              = "sun:03:00-sun:04:00"
   auto_minor_version_upgrade      = true
   deletion_protection             = var.deletion_protection
-  skip_final_snapshot             = false
-  final_snapshot_identifier       = "${local.name}-final-${random_id.suffix.hex}"
+  skip_final_snapshot             = !var.deletion_protection
+  final_snapshot_identifier       = var.deletion_protection ? "${local.name}-final-${random_id.suffix.hex}" : null
+  delete_automated_backups        = true
   enabled_cloudwatch_logs_exports = []
 }

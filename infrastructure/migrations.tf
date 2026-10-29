@@ -32,7 +32,7 @@ resource "aws_lambda_function" "migration" {
   source_code_hash               = filebase64sha256(var.lambda_path)
   timeout                        = 120
   memory_size                    = 256
-  reserved_concurrent_executions = 1
+  reserved_concurrent_executions = var.enable_lambda_reserved_concurrency ? 1 : -1
   vpc_config {
     subnet_ids         = aws_subnet.private[*].id
     security_group_ids = [aws_security_group.lambda.id]
@@ -43,5 +43,5 @@ resource "aws_lambda_function" "migration" {
       APP_DB_SECRET_ARN = aws_secretsmanager_secret.application.arn
     })
   }
-  depends_on = [aws_iam_role_policy.migration, aws_secretsmanager_secret_version.application, aws_route_table_association.private]
+  depends_on = [aws_cloudwatch_log_group.migration, time_sleep.lambda_iam_propagation, aws_secretsmanager_secret_version.application, aws_route_table_association.private]
 }

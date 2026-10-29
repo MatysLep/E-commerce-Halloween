@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
+<title>$subject</title>
+<style>body{margin:0!important;padding:0!important;}table{border-collapse:collapse;}a{color:${ORANGE};}@media only screen and (max-width:620px){.email-shell{width:100%!important;}.email-pad{padding-left:24px!important;padding-right:24px!important;}.email-title{font-size:36px!important;line-height:40px!important;}.email-outside{padding:12px 0!important;}}</style>
+</head><body style="margin:0;padding:0;background:#eeeee5;color:${INK};font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
+<div style="display:none;font-size:1px;line-height:1px;color:#eeeee5;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${preheader}</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#eeeee5"><tr><td align="center" class="email-outside" style="padding:36px 12px;">
+<!--[if mso]><table role="presentation" width="600"><tr><td><![endif]-->
+<table role="presentation" class="email-shell" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="${CREAM}" style="width:100%;max-width:600px;">
+<tr><td align="center" bgcolor="${INK}" style="padding:13px 16px;color:#fbf5e7;font-size:9px;line-height:16px;letter-spacing:2px;">DE PETITES FRAYEURS <span style="color:#e99a63;">&nbsp; ✦ &nbsp;</span> DE GRANDS SOUVENIRS</td></tr>
+<tr><td class="email-pad" style="padding:30px 40px 26px;border-bottom:1px solid ${LINE};">
+<table role="presentation" width="100%"><tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:42px;line-height:46px;font-weight:bold;letter-spacing:-2px;">minuit<span style="color:${ORANGE};font-size:27px;vertical-align:top;">✦</span></td>
+<td align="right" style="font-size:9px;line-height:15px;letter-spacing:1.5px;color:${MUTED};">LE CABINET<br>DE CURIOSITÉS</td></tr></table>
+</td></tr>
+<tr><td class="email-pad" style="padding:34px 40px 32px;">
+<table role="presentation" width="100%"><tr><td><span style="display:inline-block;background:#dfe5d6;border-radius:20px;padding:8px 12px;font-size:9px;line-height:13px;letter-spacing:1.2px;font-weight:bold;">${badge}</span></td><td align="right" aria-hidden="true" style="color:${ORANGE};font-family:Georgia,serif;font-size:42px;line-height:44px;">${symbol}</td></tr></table>
+<h1 class="email-title" style="margin:22px 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:43px;line-height:47px;font-weight:normal;letter-spacing:-1.5px;">${heading}</h1>
+<p style="margin:0;font-size:14px;line-height:24px;color:#62695d;">${introduction}</p>
+<table role="presentation" width="100%" style="margin-top:30px;"><tr>$steps</tr></table>
+</td></tr>
+<tr><td class="email-pad" style="padding:0 40px;">
+<table role="presentation" width="100%" bgcolor="#fffefa" style="border:1px solid ${LINE};"><tr><td style="padding:23px 22px;">
+<p style="margin:0 0 8px;font-size:9px;line-height:16px;letter-spacing:1.6px;font-weight:bold;color:${MUTED};">VOTRE BUTIN · N° ${short_id}</p>
+<h2 style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:34px;font-weight:normal;">Les petites trouvailles.</h2>
+<table role="presentation" width="100%">$rows
+<tr><td style="padding-top:21px;font-size:13px;line-height:22px;">Total de la commande</td><td align="right" style="padding-top:21px;font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:32px;font-weight:bold;white-space:nowrap;">${total}</td></tr></table>
+</td></tr></table>
+${cta}
+</td></tr>
+<tr><td class="email-pad" style="padding:30px 40px 24px;">
+<table role="presentation" width="100%" bgcolor="#f4e8d9"><tr><td style="padding:15px 18px;border-left:3px solid ${ORANGE};font-size:12px;line-height:20px;color:#67533f;"><strong>Un peu de magie, pour la démonstration.</strong><br>Aucun paiement ni envoi physique. L’emballage et l’expédition sont simulés.</td></tr></table>
+<p style="margin:22px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:28px;">À très vite, sous les étoiles.<br><span style="color:${ORANGE};font-style:italic;">La boutique Minuit</span></p>
+</td></tr>
+<tr><td class="email-pad" style="padding:22px 40px 28px;border-top:1px solid ${LINE};font-size:10px;line-height:18px;color:${MUTED};">
+<p style="margin:0 0 6px;">Email de suivi de votre commande · Minuit, boutique Halloween.</p>
+<p style="margin:0;word-break:break-all;">Référence complète : ${order_id}</p>
+</td></tr></table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr></table></body></html>

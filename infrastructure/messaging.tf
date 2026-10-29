@@ -51,8 +51,10 @@ resource "aws_sns_topic_subscription" "consumer" {
   protocol             = "sqs"
   endpoint             = aws_sqs_queue.consumer[each.key].arn
   raw_message_delivery = true
-  filter_policy        = jsonencode({ event_type = [each.value] })
-  depends_on           = [aws_sqs_queue_policy.sns]
+  filter_policy = jsonencode({
+    event_type = each.key == "notification" ? [each.value, "ExpeditionTerminee"] : [each.value]
+  })
+  depends_on = [aws_sqs_queue_policy.sns]
 }
 
 resource "aws_ses_email_identity" "sender" { email = var.sender_email }
@@ -75,7 +77,7 @@ resource "aws_lambda_function" "consumer" {
   source_code_hash               = filebase64sha256(var.lambda_path)
   timeout                        = 30
   memory_size                    = 256
-  reserved_concurrent_executions = 2
+  reserved_concurrent_executions = var.enable_lambda_reserved_concurrency ? 2 : -1
   vpc_config {
     subnet_ids         = aws_subnet.private[*].id
     security_group_ids = [aws_security_group.lambda.id]
@@ -83,9 +85,10 @@ resource "aws_lambda_function" "consumer" {
   environment {
     variables = merge(local.database_environment, {
       CONSUMER = each.key, SES_SENDER_EMAIL = var.sender_email
+      SITE_URL = "https://${aws_cloudfront_distribution.site.domain_name}"
     })
   }
-  depends_on = [aws_cloudwatch_log_group.lambda, aws_iam_role_policy.lambda, aws_route_table_association.private]
+  depends_on = [aws_cloudwatch_log_group.lambda, time_sleep.lambda_iam_propagation, aws_route_table_association.private]
 }
 
 resource "aws_lambda_event_source_mapping" "consumer" {

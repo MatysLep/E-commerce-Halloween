@@ -14,6 +14,7 @@ mock_provider "aws" {
 }
 mock_provider "aws" { alias = "global" }
 mock_provider "random" {}
+mock_provider "time" {}
 
 variables {
   sender_email = "shop@example.com"

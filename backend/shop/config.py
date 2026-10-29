@@ -14,6 +14,7 @@ class Settings:
     client_id: str = ""
     topic_arn: str = ""
     sender_email: str = ""
+    site_url: str = ""
     db_secret_arn: str = ""
     db_host: str = ""
     db_name: str = "halloween"
@@ -39,6 +40,7 @@ def get_settings() -> Settings:
         client_id=os.getenv("COGNITO_CLIENT_ID", ""),
         topic_arn=os.getenv("EVENT_TOPIC_ARN", ""),
         sender_email=os.getenv("SES_SENDER_EMAIL", ""),
+        site_url=os.getenv("SITE_URL", ""),
         db_secret_arn=os.getenv("DB_SECRET_ARN", ""),
         db_host=os.getenv("DB_HOST", ""),
         db_name=os.getenv("DB_NAME", "halloween"),

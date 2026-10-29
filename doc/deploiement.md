@@ -12,7 +12,7 @@ La construction locale, les tests et les validations Terraform ne nécessitent p
 
 Cette architecture **ne garantit pas le Free Tier**. ALB, NAT, RDS, WAF, stockage, secrets et trafic peuvent être facturés. Pour un exercice à zéro coût AWS, utiliser la version Docker locale et présenter le plan cloud. Le PDF autorise la présentation d’une architecture dépassant le budget sans la déployer.
 
-Le profil RDS réduit (`high_availability=false`, valeur par défaut) est dimensionné à `db.t4g.micro`, Single-AZ, 20 Gio de SSD `gp2`, sans extension automatique du stockage. Il conserve un jour de sauvegardes automatiques et n’exporte pas les logs PostgreSQL vers CloudWatch. Le chiffrement, le réseau privé, Secrets Manager et le snapshot final restent activés. Le profil HA est payant et conserve son dimensionnement plus important.
+Le profil RDS réduit (`high_availability=false`, valeur par défaut) est dimensionné à `db.t4g.micro`, Single-AZ, 20 Gio de SSD `gp2`, sans extension automatique du stockage. Il conserve un jour de sauvegardes automatiques et n’exporte pas les logs PostgreSQL vers CloudWatch. Le chiffrement, le réseau privé et Secrets Manager restent activés. Le snapshot final est conservé uniquement avec `deletion_protection=true`. Le profil HA est payant et conserve son dimensionnement plus important.
 
 L’offre RDS actuelle repose sur les crédits des plans Free/Paid. L’ancienne offre, pour les inscriptions antérieures au 15 juillet 2025, était limitée à douze mois : son quota de 750 heures et 20 Go `gp2` ne constitue pas une promesse de gratuité pour un déploiement en octobre 2026. Vérifier le solde, l’expiration des crédits et les services autorisés dans votre compte de formation. [Conditions AWS RDS Free Tier](https://aws.amazon.com/rds/free/), [FAQ RDS](https://aws.amazon.com/rds/faqs/).
 
@@ -23,7 +23,7 @@ Préparer :
 - Un compte AWS de formation autorisant les services de ce projet, et une session AWS CLI valide, de préférence avec IAM Identity Center.
 - Des permissions de déploiement permettant de créer une origine VPC CloudFront et, si nécessaire, son rôle lié au service dans le compte. Les comptes de formation peuvent limiter ces permissions.
 - Une adresse email d’envoi SES dont vous contrôlez la boîte (`sender_email`), et les adresses de réception des alertes (`alarm_emails`).
-- Les quotas EC2, RDS, NAT/EIP, VPC et Lambda. Les réservations Lambda totalisent **7 exécutions** ; AWS impose aussi une réserve de concurrence non réservée. Un compte avec un faible quota Lambda peut nécessiter une hausse de quota.
+- Les quotas EC2, RDS, NAT/EIP, VPC et Lambda. Par défaut, les quatre Lambdas partagent le quota du compte sans réserver de capacité. Chaque déclencheur SQS est limité à deux exécutions simultanées. L’option `enable_lambda_reserved_concurrency=true` réserve sept exécutions au total et nécessite un quota suffisant pour conserver aussi le minimum non réservé imposé par AWS.
 - Python 3.12+, Terraform 1.10+, AWS CLI v2 et les dépendances du projet.
 
 La boutique utilise l’URL HTTPS attribuée par CloudFront, comme `https://d123example.cloudfront.net`. Vous n’avez aucun domaine à acheter ni zone Route 53 à créer. Terraform utilise le certificat par défaut CloudFront et configure aussi cette URL pour les retours de connexion Cognito. WAF global est administré via `us-east-1` ; les données métier et les fonctions restent à Paris.
@@ -31,6 +31,23 @@ La boutique utilise l’URL HTTPS attribuée par CloudFront, comme `https://d123
 L’ALB reste interne au VPC. CloudFront le rejoint par une origine VPC en HTTP privé, puis l’ALB contacte les EC2 en HTTP privé. Le navigateur utilise HTTPS et la connexion SQL utilise TLS. L’Internet Gateway attachée au VPC satisfait le prérequis CloudFront ; ce flux privé ne traverse pas le NAT.
 
 ## Préparer une version
+
+Sélectionner d’abord le compte cible. Un changement d’utilisateur IAM ne change pas nécessairement de compte AWS : vérifier le champ `Account` avec :
+
+```bash
+aws sts get-caller-identity --profile NOM_DU_PROFIL
+```
+
+Puis renseigner le profil et l’ID retourné dans `infrastructure/terraform.tfvars` :
+
+```hcl
+aws_profile         = "NOM_DU_PROFIL"
+expected_account_id = "123456789012" # Remplacer par l’ID réel du compte cible.
+```
+
+Les deux fournisseurs Terraform refusent un compte différent de `expected_account_id`. Le script de publication du frontend vérifie aussi que ses identifiants correspondent au compte enregistré dans les sorties du déploiement.
+
+Lors d’un changement de compte, conserver séparément l’état de chaque déploiement et régénérer le plan. Un plan enregistré avant la sélection du nouveau compte ne doit pas être réutilisé. Archiver un état ne supprime aucune ressource AWS : l’ancien compte doit être nettoyé séparément si sa suppression est souhaitée.
 
 À la racine :
 
@@ -43,7 +60,7 @@ make build
 test -f infrastructure/terraform.tfvars || cp infrastructure/terraform.tfvars.example infrastructure/terraform.tfvars
 ```
 
-Renseigner vos valeurs dans `terraform.tfvars` en conservant les adresses de l’équipe déjà saisies. Les anciennes variables `hosted_zone_id` et `api_domain` ont été retirées de cette version. Garder `high_availability=false` pour la version réduite et `deletion_protection=true` tant que des données doivent être conservées. `enable_waf=false` réduit le périmètre et certains frais, mais retire WAF de la solution déployée.
+Renseigner vos valeurs dans `terraform.tfvars` en conservant les adresses de l’équipe déjà saisies. Les anciennes variables `hosted_zone_id` et `api_domain` ont été retirées de cette version. Garder `high_availability=false` pour la version réduite et utiliser `deletion_protection=false` (valeur par défaut) pour permettre un nettoyage complet avec `terraform destroy`. Utiliser `deletion_protection=true` lorsque des données doivent être protégées ; revenir à `false` et appliquer le changement avant destruction. `enable_waf=false` réduit le périmètre et certains frais, mais retire WAF de la solution déployée.
 
 Le script de construction prépare des bibliothèques Linux x86_64, même sur Mac ARM. Les archives contiennent les migrations et le certificat RDS. Elles doivent être reconstruites après tout changement Python. Aucun paquet ne doit être téléchargé par une Lambda au démarrage.
 

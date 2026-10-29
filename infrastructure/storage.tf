@@ -1,8 +1,9 @@
 resource "random_id" "suffix" { byte_length = 4 }
 resource "aws_s3_bucket" "private" {
-  for_each      = toset(["frontend", "artifacts", "audit"])
-  bucket        = "${local.name}-${each.key}-${local.account_id}-${random_id.suffix.hex}"
-  force_destroy = false
+  for_each = toset(["frontend", "artifacts", "audit"])
+  bucket   = "${local.name}-${each.key}-${local.account_id}-${random_id.suffix.hex}"
+  # Also remove versions and delete markers left by uploads and CloudTrail.
+  force_destroy = !var.deletion_protection
 }
 resource "aws_s3_bucket_public_access_block" "private" {
   for_each                = aws_s3_bucket.private

@@ -47,11 +47,11 @@ def publish_pending(factory, deliver, limit: int = 20) -> int:
 
 
 def local_delivery(session, message: dict):
-    def log_email(order):
-        logger.info("email_simulated order_id=%s", order.id)
+    def log_email(order, event_type):
+        logger.info("email_simulated order_id=%s event_type=%s", order.id, event_type)
 
-    for consumer, event_type in ROUTES.items():
-        if message["type"] == event_type:
+    for consumer, event_types in ROUTES.items():
+        if message["type"] in event_types:
             process_event(session, consumer, message, log_email)
 
 

@@ -1,3 +1,23 @@
+variable "aws_profile" {
+  type        = string
+  default     = null
+  description = "Optional named AWS CLI profile used by Terraform and frontend publication."
+  validation {
+    condition     = var.aws_profile == null ? true : length(trimspace(var.aws_profile)) > 0
+    error_message = "Use a non-empty profile name, or null for the default credential chain."
+  }
+}
+
+variable "expected_account_id" {
+  type        = string
+  default     = null
+  description = "Optional 12-digit account ID; AWS providers refuse credentials from another account."
+  validation {
+    condition     = var.expected_account_id == null ? true : can(regex("^[0-9]{12}$", var.expected_account_id))
+    error_message = "expected_account_id must contain exactly 12 digits, or be null."
+  }
+}
+
 variable "project_name" {
   type    = string
   default = "halloween-shop"
@@ -43,8 +63,10 @@ variable "monthly_budget_usd" {
 }
 
 variable "deletion_protection" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = false
+  nullable    = false
+  description = "False allows complete demo teardown (S3 versions, RDS backups and application secret included). True protects RDS/ALB/Cognito, refuses non-empty S3 deletion and retains a final snapshot and a seven-day secret recovery window. Apply changes before destroy."
 }
 
 variable "enable_waf" {
@@ -60,4 +82,10 @@ variable "release_path" {
 variable "lambda_path" {
   type    = string
   default = "../build/lambda.zip"
+}
+
+variable "enable_lambda_reserved_concurrency" {
+  type        = bool
+  default     = false
+  description = "Reserve 2 executions per consumer and 1 for migrations only when the account quota permits it. SQS mappings remain limited to 2 without reservations."
 }

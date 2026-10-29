@@ -56,8 +56,30 @@ resource "aws_iam_role_policy" "lambda" {
       { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes"], Resource = [aws_sqs_queue.consumer[each.key].arn] },
       { Effect = "Allow", Action = ["secretsmanager:GetSecretValue"], Resource = [local.database_environment.DB_SECRET_ARN] }
       ], each.key == "notification" ? [{
-        Effect    = "Allow", Action = ["ses:SendEmail"], Resource = [aws_ses_email_identity.sender.arn]
+        # SES can authorize recipient identities too in sandbox. Keep sending
+        # limited to this account/region and the exact configured From address.
+        Effect    = "Allow", Action = ["ses:SendEmail"], Resource = ["arn:aws:ses:eu-west-3:${local.account_id}:identity/*"]
         Condition = { StringEquals = { "ses:FromAddress" = var.sender_email } }
     }] : [])
   })
+}
+
+# IAM writes are eventually consistent. Lambda can fail asynchronously even after
+# PutRolePolicy succeeds; wait before configuring its private network interfaces.
+resource "time_sleep" "lambda_iam_propagation" {
+  create_duration = "30s"
+  triggers = {
+    policy_revision = sha256(jsonencode({
+      consumers = {
+        for name, policy in aws_iam_role_policy.lambda : name => {
+          id     = policy.id
+          policy = policy.policy
+        }
+      }
+      migration = {
+        id     = aws_iam_role_policy.migration.id
+        policy = aws_iam_role_policy.migration.policy
+      }
+    }))
+  }
 }

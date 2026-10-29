@@ -4,9 +4,12 @@ Les tests Python utilisent pytest. Les mêmes scénarios métier sont exécutés
 
 - `test_orders.py` : montants, réservations de stock, annulation complète d’une transaction, nouvelles tentatives et concurrence.
 - `test_api.py` : requêtes HTTP, validation et impossibilité de lire la commande d’un autre client.
-- `test_events.py` : chaîne de traitement, répétitions, pannes et réponses partielles SQS.
+- `test_events.py` : chaîne de traitement, répétitions, pannes, réponses partielles SQS, emails distincts de confirmation et d’expédition, événements reçus en ordre inverse et déduplication des deux notifications.
 - `test_auth.py` : vraies signatures RSA de test, expiration, client, émetteur et email vérifié.
 - `test_migrations.py` : création d’une base vide et seconde exécution sans perte du stock.
+- `test_deployment_account.py` : sélection du profil Terraform et refus de publier le frontend dans un autre compte AWS.
+- `test_emails.py` : contenu des deux emails, montants, liens HTTPS et échappement HTML des données de commande.
+- `test_bootstrap.py` : isolation des dépendances Python de l’AWS CLI pendant la migration EC2.
 - `cart.test.mjs` : panier et conservation de la clé lors d’une nouvelle tentative navigateur.
 - `conftest.py` : préparation et nettoyage des bases temporaires.
 

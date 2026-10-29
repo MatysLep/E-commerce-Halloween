@@ -13,6 +13,8 @@ Chaque fichier a une responsabilité précise pour éviter un gros fichier qui f
 | `auth.py` | Vérifier la connexion Cognito et l’identité du client. |
 | `events.py` | Réaliser l’emballage, l’expédition et la notification une seule fois en base. |
 | `publisher.py` | Envoyer les événements en attente, puis réessayer après un échec. |
+| `emails.py` | Composer les emails Minuit en HTML et texte avec le récapitulatif et le lien de suivi. |
+| `templates/order_email.html` | La mise en page des emails, partagée entre confirmation et expédition. |
 | `handlers.py` | Adapter les messages SQS aux traitements métier des Lambdas. |
 | `migration_handler.py` | Préparer la base sur AWS avec un compte administrateur isolé. |
 | `cli.py` | Les commandes d’administration : `init`, `status`, `replay`. |
@@ -24,3 +26,5 @@ Une **transaction** est un groupe d’écritures indivisible. Une **outbox** est
 Les fonctions métier reçoivent leurs dépendances (`factory`, fonction d’envoi d’email). Les tests peuvent donc simuler une panne sans compte AWS. Les prix sont des nombres entiers de centimes ; on n’utilise pas de nombres décimaux approximatifs pour calculer une commande.
 
 Les événements ne contiennent pas d’email. Le consommateur de notification retrouve le destinataire dans la commande. Les logs enregistrent les identifiants techniques, pas les jetons ou les adresses email.
+
+Le consommateur de notification envoie un email à la confirmation (`CommandeCreee`) puis un autre à l’expédition (`ExpeditionTerminee`). Il choisit le sujet et le contenu à partir de l’événement durable et utilise l’adresse client de la commande. Chaque événement possède son propre reçu pour éviter les doublons lors des nouvelles tentatives SQS. En local, ces deux envois sont simulés dans les logs.

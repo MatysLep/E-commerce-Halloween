@@ -11,6 +11,18 @@ import boto3
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def deployment_session(outputs):
+    session = boto3.Session(profile_name=outputs.get("aws_profile"), region_name="eu-west-3")
+    account = session.client("sts").get_caller_identity()["Account"]
+    expected = outputs["aws_account_id"]
+    if account != expected:
+        raise RuntimeError(
+            f"AWS account mismatch: authenticated in {account}, deployment belongs to {expected}. "
+            "Select the correct AWS profile before publishing."
+        )
+    return session
+
+
 def main():
     result = subprocess.run(
         ["terraform", f"-chdir={ROOT / 'infrastructure'}", "output", "-json"],
@@ -19,6 +31,7 @@ def main():
         text=True,
     )
     outputs = {key: item["value"] for key, item in json.loads(result.stdout).items()}
+    session = deployment_session(outputs)
     configuration = {
         "mode": "aws",
         "apiBase": "",
@@ -26,7 +39,7 @@ def main():
         "clientId": outputs["cognito_client_id"],
         "region": "eu-west-3",
     }
-    s3 = boto3.client("s3", region_name="eu-west-3")
+    s3 = session.client("s3")
     for path in sorted((ROOT / "frontend").rglob("*")):
         if (
             path.suffix not in {".html", ".css", ".js", ".mjs", ".jpg", ".webp", ".png"}
@@ -48,7 +61,7 @@ def main():
             else f"{mime_type}; charset=utf-8",
             CacheControl="public,max-age=60",
         )
-    boto3.client("cloudfront").create_invalidation(
+    session.client("cloudfront").create_invalidation(
         DistributionId=outputs["distribution_id"],
         InvalidationBatch={
             "Paths": {"Quantity": 1, "Items": ["/*"]},

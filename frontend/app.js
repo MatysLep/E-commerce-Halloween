@@ -51,7 +51,16 @@ async function api(path, options = {}) {
       ...options.headers,
     },
   });
-  const body = await response.json();
+  let body;
+  try {
+    body = await response.json();
+  } catch {
+    throw new Error(
+      response.ok
+        ? "Le serveur a renvoyé une réponse inattendue. Réessaie dans un instant."
+        : `Le service est temporairement indisponible (HTTP ${response.status}). Réessaie dans un instant.`,
+    );
+  }
   if (!response.ok)
     throw new Error(typeof body.detail === "string" ? body.detail : "Une erreur est survenue.");
   return body;
