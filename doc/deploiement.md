@@ -12,6 +12,12 @@ La construction locale, les tests et les validations Terraform ne nécessitent p
 
 Cette architecture **ne garantit pas le Free Tier**. ALB, NAT, RDS, WAF, stockage, secrets et trafic peuvent être facturés. Pour un exercice à zéro coût AWS, utiliser la version Docker locale et présenter le plan cloud. Le PDF autorise la présentation d’une architecture dépassant le budget sans la déployer.
 
+Le profil RDS réduit (`high_availability=false`, valeur par défaut) est dimensionné à `db.t4g.micro`, Single-AZ, 20 Gio de SSD `gp2`, sans extension automatique du stockage. Il conserve un jour de sauvegardes automatiques et n’exporte pas les logs PostgreSQL vers CloudWatch. Le chiffrement, le réseau privé, Secrets Manager et le snapshot final restent activés. Le profil HA est payant et conserve son dimensionnement plus important.
+
+L’offre RDS actuelle repose sur les crédits des plans Free/Paid. L’ancienne offre, pour les inscriptions antérieures au 15 juillet 2025, était limitée à douze mois : son quota de 750 heures et 20 Go `gp2` ne constitue pas une promesse de gratuité pour un déploiement en octobre 2026. Vérifier le solde, l’expiration des crédits et les services autorisés dans votre compte de formation. [Conditions AWS RDS Free Tier](https://aws.amazon.com/rds/free/), [FAQ RDS](https://aws.amazon.com/rds/faqs/).
+
+Secrets Manager reste facturé séparément selon l’offre du compte. Réduire la rétention ne garantit pas un stockage de sauvegardes gratuit, et les snapshots conservés après suppression peuvent continuer à coûter. Si RDS est déjà déployé, examiner le plan avant application : un volume qui a grandi ne peut pas être réduit directement à 20 Gio. [Gestion des secrets RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html), [stockage autoscaling RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.Autoscaling.html).
+
 Préparer :
 
 - Un compte AWS de formation autorisant les services de ce projet, et une session AWS CLI valide, de préférence avec IAM Identity Center.

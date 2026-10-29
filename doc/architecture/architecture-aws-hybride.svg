@@ -459,5 +459,5 @@
 <text x="60" y="2910" font-size="20" fill="#172b46" font-weight="700" text-anchor="start">Configuration dessinée : mode démo réduit ; ASG désiré=1, max=2 ; RDS Single-AZ ; un NAT dans une AZ.</text>
 <text x="60" y="2945" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Option high_availability=true : ASG min/désiré=2, max=4 ; RDS Multi-AZ ; un NAT par AZ. Les deux modes peuvent être facturés.</text>
 <text x="60" y="2980" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">D1 est un renvoi logique vers le même RDS ; les sections sont des regroupements de flux, pas des frontières réseau supplémentaires.</text>
-<text x="60" y="3015" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : 7 jours. Emballage et expédition simulés.</text>
+<text x="60" y="3015" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : 1 jour. Emballage et expédition simulés.</text>
 <text x="60" y="3050" font-size="17" fill="#52637a" font-weight="400" text-anchor="start">Logos officiels AWS · paquet du 31 juillet 2026 · Schéma vérifié le 28 octobre 2026.</text></g></svg>

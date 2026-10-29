@@ -9,7 +9,7 @@ variable "project_name" {
 
 variable "high_availability" {
   type        = bool
-  default     = true
+  default     = false
   description = "Two EC2 instances, RDS Multi-AZ and one NAT per AZ. False is a paid demo without HA."
 }
 

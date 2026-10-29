@@ -24,6 +24,10 @@ Terraform décrit les services à créer. `plan` propose les changements, `apply
 
 Le choix `high_availability=false` lance une EC2, un NAT et un RDS sans standby. Il reste payant et n’assure pas la haute disponibilité. Avec `true`, le minimum passe à deux EC2, deux NAT et RDS Multi-AZ. L’ALB utilise deux zones dans les deux modes.
 
+Pour RDS, le mode réduit utilise `db.t4g.micro`, 20 Gio de SSD `gp2`, aucune extension automatique du stockage, une rétention des sauvegardes d’un jour et aucun export des logs PostgreSQL vers CloudWatch. Le mode HA conserve `db.t4g.small`, `gp3`, une limite d’extension à 50 Gio et sept jours de sauvegardes. Dans les deux cas, RDS reste privé et chiffré, avec un snapshot final et des secrets gérés. Le snapshot et Secrets Manager peuvent être facturés séparément.
+
+Ces réglages réduisent la consommation et reprennent le dimensionnement de l’ancienne offre RDS gratuite. Ils ne garantissent pas la gratuité du compte : l’offre actuelle RDS utilise des crédits et l’éligibilité doit être vérifiée dans la facturation AWS. Voir [AWS RDS Free Tier](https://aws.amazon.com/rds/free/).
+
 Le site utilise une adresse fournie par AWS, comme `https://d123example.cloudfront.net`, avec le certificat HTTPS par défaut de CloudFront. Aucun domaine personnalisé, aucune zone Route 53 et aucun certificat ACM à valider ne sont requis.
 
 Les EC2 et les bases n’ont pas d’IP publique. L’ALB est interne, dans les deux sous-réseaux privés. CloudFront le rejoint via une origine VPC : les flux CloudFront → ALB et ALB → EC2 utilisent HTTP dans le réseau privé. Le groupe de sécurité de l’ALB autorise le port 80 depuis la prefix list CloudFront et le listener exige un en-tête secret. Le trafic navigateur → CloudFront reste en HTTPS et le trafic SQL utilise TLS avec vérification du certificat. Systems Manager remplace SSH.

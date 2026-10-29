@@ -22,6 +22,18 @@ variables {
 
 run "demo_plan" {
   command = plan
+  variables { high_availability = false }
+  assert {
+    condition = (
+      aws_db_instance.main.instance_class == "db.t4g.micro" &&
+      aws_db_instance.main.allocated_storage == 20 &&
+      aws_db_instance.main.max_allocated_storage == 0 &&
+      aws_db_instance.main.storage_type == "gp2" &&
+      aws_db_instance.main.backup_retention_period == 1 &&
+      length(aws_db_instance.main.enabled_cloudwatch_logs_exports) == 0
+    )
+    error_message = "Reduced RDS must stay micro, 20 GiB gp2, no storage autoscaling, one-day backups and no exported SQL logs."
+  }
   assert {
     condition     = aws_lb.api.internal
     error_message = "The domain-free API must use an internal ALB."
@@ -65,6 +77,15 @@ run "demo_plan" {
 run "high_availability_plan" {
   command = plan
   variables { high_availability = true }
+  assert {
+    condition = (
+      aws_db_instance.main.instance_class == "db.t4g.small" &&
+      aws_db_instance.main.storage_type == "gp3" &&
+      aws_db_instance.main.max_allocated_storage == 50 &&
+      aws_db_instance.main.backup_retention_period == 7
+    )
+    error_message = "The optional paid HA profile must retain its database capacity and seven-day backups."
+  }
   assert {
     condition     = aws_autoscaling_group.api.min_size == 2 && aws_db_instance.main.multi_az && length(aws_nat_gateway.main) == 2
     error_message = "HA requires two API instances, Multi-AZ RDS and one NAT per AZ."

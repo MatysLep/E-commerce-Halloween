@@ -529,8 +529,9 @@ def draw_footer(d, ha):
     d.text(
         60,
         3015,
-        "Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : 7 "
-        "jours. Emballage et expédition simulés.",
+        "Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : "
+        + ("7 jours" if ha else "1 jour")
+        + ". Emballage et expédition simulés.",
         19,
     )
     d.text(
