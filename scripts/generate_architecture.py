@@ -99,10 +99,20 @@ def configuration():
     content = path.read_text() if path.exists() else ""
     availability = re.search(r"^high_availability\s*=\s*(true|false)\s*$", content, re.M)
     budget = re.search(r"^monthly_budget_usd\s*=\s*(\d+(?:\.\d+)?)\s*$", content, re.M)
-    return bool(availability and availability[1] == "true"), budget[1] if budget else "20"
+
+    def flag(name, default):
+        match = re.search(rf"^\s*{name}\s*=\s*(true|false)\s*(?:#.*)?$", content, re.M)
+        return match[1] == "true" if match else default
+
+    return (
+        bool(availability and availability[1] == "true"),
+        budget[1] if budget else "20",
+        flag("enable_waf", True),
+        flag("enable_lambda_reserved_concurrency", False),
+    )
 
 
-def draw_access(d):
+def draw_access(d, waf):
     d.section(
         "01",
         150,
@@ -137,7 +147,7 @@ def draw_access(d):
         130,
         "Amazon-Cognito",
         "Cognito User Pool",
-        ["Inscription + email vérifié", "Code OAuth / PKCE ; JWT"],
+        ["Email vérifié ; jetons JWT", "Mot de passe ou OAuth / PKCE"],
     )
     d.arrow("M310 345H410")
     d.text(330, 329, "HTTPS", 17, LINE)
@@ -147,7 +157,14 @@ def draw_access(d):
     d.text(1050, 240, "Connexion du client", 17, LINE)
     d.rect(410, 440, 390, 60)
     d.icon("AWS-WAF", 430, 450, 40)
-    d.text(490, 477, "WAF · règles + limite de débit", 20, INK, True)
+    d.text(
+        490,
+        477,
+        "WAF · règles + limite de débit" if waf else "WAF · désactivé par configuration",
+        18,
+        INK,
+        True,
+    )
     d.arrow("M600 440V410", True)
     d.rect(910, 440, 430, 60)
     d.icon("AWS-Shield", 930, 450, 40)
@@ -164,7 +181,7 @@ def draw_network(d, ha):
         "API et données — VPC avec sous-réseaux dans deux AZ",
         "ALB, EC2 et RDS privés. "
         + (
-            "Deux EC2 minimum, RDS Multi-AZ, deux NAT."
+            "Deux EC2 minimum et deux NAT ; RDS reste Single-AZ."
             if ha
             else "Au démarrage : une EC2, RDS Single-AZ et un NAT ; absence de haute disponibilité."
         ),
@@ -217,7 +234,7 @@ def draw_network(d, ha):
         [
             "Produits, commandes, historique",
             "Événements, outbox, reçus",
-            "Multi-AZ : " + ("activé" if ha else "désactivé (Single-AZ)"),
+            "Single-AZ · db.t4g.micro · 20 Gio gp2",
         ],
     )
     d.arrow("M410 385H385V540H55V700H255V725")
@@ -313,9 +330,23 @@ def draw_events(d):
     for x, label, event_type, detail in [
         (600, "Emballage", "CommandeCreee", "CONFIRMED → PACKED"),
         (1050, "Expédition", "EmballageTermine", "PACKED → SHIPPED"),
-        (1500, "Notification", "CommandeCreee", "Confirmation email via SES"),
+        (
+            1500,
+            "Notification",
+            "CommandeCreee + ExpeditionTerminee",
+            "Confirmation + expédition SES",
+        ),
     ]:
-        d.card(x, 1410, 400, 120, "Amazon-Simple-Queue-Service", f"SQS · {label}", [event_type])
+        d.card(
+            x,
+            1410,
+            400,
+            120,
+            "Amazon-Simple-Queue-Service",
+            f"SQS · {label}",
+            ["CommandeCreee", "+ ExpeditionTerminee"] if label == "Notification" else [event_type],
+            body_size=18,
+        )
         d.card(
             x,
             1610,
@@ -323,7 +354,7 @@ def draw_events(d):
             150,
             "AWS-Lambda",
             f"Lambda · {label}",
-            [detail, "Idempotence : reçus SQL D1", "VPC privé ; concurrence : 2"],
+            [detail, "Idempotence : reçus SQL D1", "VPC privé ; mapping SQS : max 2"],
             body_size=18,
         )
         d.arrow(f"M{x + 200} 1530V1610", True)
@@ -345,7 +376,7 @@ def draw_events(d):
             "Lambda : timeout 30 secondes",
             "SQS : visibilité 180 secondes",
             "Échec partiel : message réessayé",
-            "Email : doublon rare possible",
+            "Email : doublon possible",
         ],
         22,
         18,
@@ -365,7 +396,7 @@ def draw_events(d):
     d.arrow("M1900 1705H1940V1948H1900", True)
 
 
-def draw_deployment(d):
+def draw_deployment(d, reserved):
     d.section(
         "04",
         2030,
@@ -404,7 +435,7 @@ def draw_deployment(d):
         [
             "Alembic + catalogue initial",
             "Compte SQL applicatif limité",
-            "VPC privé ; timeout 120 s ; max 1",
+            "VPC privé ; timeout 120 secondes",
         ],
         body_size=18,
     )
@@ -435,8 +466,10 @@ def draw_deployment(d):
     d.text(
         80,
         2360,
-        "Les Lambdas métier écrivent leurs transitions et événements en base ; le "
-        "publisher EC2 republie ensuite l’outbox vers SNS.",
+        "Migration : "
+        + ("concurrence réservée à 1." if reserved else "aucune concurrence réservée.")
+        + " Métier : SQL → outbox → publisher EC2 → SNS ; réservation Lambda "
+        + ("à 2 par fonction." if reserved else "désactivée."),
         19,
     )
 
@@ -456,7 +489,7 @@ def draw_operations(d, budget):
             2540,
             "Amazon-CloudWatch",
             "CloudWatch",
-            ["Logs, métriques, DLQ, âge outbox", "Alarmes → SNS → 3 destinataires"],
+            ["Logs, métriques, DLQ, âge outbox", "Alarmes → SNS → emails configurés"],
         ),
         (
             705,
@@ -491,7 +524,7 @@ def draw_operations(d, budget):
             2700,
             "AWS-Budgets",
             "AWS Budgets",
-            [f"Alerte mensuelle : 80 % de {budget} USD", "3 destinataires ; aucun plafond"],
+            [f"Alerte mensuelle : 80 % de {budget} USD", "Emails configurés ; aucun plafond"],
         ),
     ]
     for x, y, icon, title, lines in services:
@@ -504,7 +537,7 @@ def draw_footer(d, ha):
         2910,
         "Configuration dessinée : "
         + (
-            "mode haute disponibilité activé."
+            "capacité EC2/NAT doublée ; RDS reste Single-AZ."
             if ha
             else "mode démo réduit ; ASG désiré=1, max=2 ; RDS Single-AZ ; un NAT dans une AZ."
         ),
@@ -515,8 +548,8 @@ def draw_footer(d, ha):
     d.text(
         60,
         2945,
-        "Option high_availability=true : ASG min/désiré=2, max=4 ; RDS Multi-AZ ; "
-        "un NAT par AZ. Les deux modes peuvent être facturés.",
+        "Option high_availability=true : ASG min/désiré=2, max=4 ; deux NAT ; "
+        "RDS inchangé, sans haute disponibilité SQL.",
         19,
     )
     d.text(
@@ -529,32 +562,38 @@ def draw_footer(d, ha):
     d.text(
         60,
         3015,
-        "Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : "
-        + ("7 jours" if ha else "1 jour")
-        + ". Emballage et expédition simulés.",
+        "Schéma du code Terraform, déploiement AWS non attesté. Sauvegardes RDS : "
+        "1 jour. Emballage et expédition simulés.",
         19,
     )
     d.text(
         60,
         3050,
-        "Logos officiels AWS · paquet du 31 juillet 2026 · Schéma vérifié le 28 octobre 2026.",
+        "Logos officiels AWS · paquet du 31 juillet 2026 · "
+        "Schéma aligné sur le code le 29 octobre 2026.",
         17,
     )
 
 
 def main():
-    ha, budget = configuration()
+    ha, budget, waf, reserved = configuration()
     d = Diagram()
     d.rect(0, 0, 2000, 3070, "#fff", "#fff")
     d.text(60, 62, "E-commerce Halloween", 39, INK, True)
     d.text(60, 105, "Architecture Terraform actuelle : API EC2 + traitements Lambda", 25)
     d.text(1940, 60, "AWS · eu-west-3 · Paris", 21, anchor="end")
-    d.text(1940, 100, "Mode HA" if ha else "Mode démo · high_availability=false", 18, anchor="end")
+    d.text(
+        1940,
+        100,
+        "Capacité EC2/NAT doublée" if ha else "Mode démo · high_availability=false",
+        18,
+        anchor="end",
+    )
 
-    draw_access(d)
+    draw_access(d, waf)
     draw_network(d, ha)
     draw_events(d)
-    draw_deployment(d)
+    draw_deployment(d, reserved)
     draw_operations(d, budget)
     draw_footer(d, ha)
     d.save(

@@ -238,8 +238,8 @@
 <rect x="1450" y="280" width="470" height="130" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#Amazon-Cognito" xlink:href="#Amazon-Cognito" x="1470" y="302" width="60" height="60"/>
 <text x="1550" y="323" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">Cognito User Pool</text>
-<text x="1550" y="355" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Inscription + email vérifié</text>
-<text x="1550" y="382" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Code OAuth / PKCE ; JWT</text>
+<text x="1550" y="355" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Email vérifié ; jetons JWT</text>
+<text x="1550" y="382" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Mot de passe ou OAuth / PKCE</text>
 <path d="M310 345H410" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round"/>
 <text x="330" y="329" font-size="17" fill="#73849a" font-weight="400" text-anchor="start">HTTPS</text>
 <path d="M800 345H910" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round"/>
@@ -248,7 +248,7 @@
 <text x="1050" y="240" font-size="17" fill="#73849a" font-weight="400" text-anchor="start">Connexion du client</text>
 <rect x="410" y="440" width="390" height="60" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-WAF" xlink:href="#AWS-WAF" x="430" y="450" width="40" height="40"/>
-<text x="490" y="477" font-size="20" fill="#172b46" font-weight="700" text-anchor="start">WAF · règles + limite de débit</text>
+<text x="490" y="477" font-size="18" fill="#172b46" font-weight="700" text-anchor="start">WAF · règles + limite de débit</text>
 <path d="M600 440V410" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round" stroke-dasharray="7 6"/>
 <rect x="910" y="440" width="430" height="60" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-Shield" xlink:href="#AWS-Shield" x="930" y="450" width="40" height="40"/>
@@ -283,7 +283,7 @@
 <text x="1520" y="768" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">RDS PostgreSQL · D1</text>
 <text x="1520" y="800" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Produits, commandes, historique</text>
 <text x="1520" y="827" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Événements, outbox, reçus</text>
-<text x="1520" y="854" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Multi-AZ : désactivé (Single-AZ)</text>
+<text x="1520" y="854" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Single-AZ · db.t4g.micro · 20 Gio gp2</text>
 <path d="M410 385H385V540H55V700H255V725" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round"/>
 <text x="650" y="548" font-size="18" fill="#73849a" font-weight="400" text-anchor="start">Origine VPC CloudFront → ALB : connexion privée, HTTP</text>
 <path d="M430 810H530" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round"/>
@@ -328,13 +328,13 @@
 <rect x="600" y="1410" width="400" height="120" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#Amazon-Simple-Queue-Service" xlink:href="#Amazon-Simple-Queue-Service" x="620" y="1432" width="60" height="60"/>
 <text x="700" y="1453" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">SQS · Emballage</text>
-<text x="700" y="1485" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">CommandeCreee</text>
+<text x="700" y="1485" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">CommandeCreee</text>
 <rect x="600" y="1610" width="400" height="150" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-Lambda" xlink:href="#AWS-Lambda" x="620" y="1632" width="60" height="60"/>
 <text x="700" y="1653" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">Lambda · Emballage</text>
 <text x="700" y="1685" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">CONFIRMED → PACKED</text>
 <text x="700" y="1712" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Idempotence : reçus SQL D1</text>
-<text x="700" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; concurrence : 2</text>
+<text x="700" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; mapping SQS : max 2</text>
 <path d="M800 1530V1610" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round" stroke-dasharray="7 6"/>
 <text x="815" y="1575" font-size="17" fill="#73849a" font-weight="400" text-anchor="start">Déclenche</text>
 <rect x="600" y="1810" width="400" height="80" rx="16" fill="#fff8ef" stroke="#edc291" stroke-width="1.5"/>
@@ -345,13 +345,13 @@
 <rect x="1050" y="1410" width="400" height="120" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#Amazon-Simple-Queue-Service" xlink:href="#Amazon-Simple-Queue-Service" x="1070" y="1432" width="60" height="60"/>
 <text x="1150" y="1453" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">SQS · Expédition</text>
-<text x="1150" y="1485" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">EmballageTermine</text>
+<text x="1150" y="1485" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">EmballageTermine</text>
 <rect x="1050" y="1610" width="400" height="150" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-Lambda" xlink:href="#AWS-Lambda" x="1070" y="1632" width="60" height="60"/>
 <text x="1150" y="1653" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">Lambda · Expédition</text>
 <text x="1150" y="1685" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">PACKED → SHIPPED</text>
 <text x="1150" y="1712" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Idempotence : reçus SQL D1</text>
-<text x="1150" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; concurrence : 2</text>
+<text x="1150" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; mapping SQS : max 2</text>
 <path d="M1250 1530V1610" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round" stroke-dasharray="7 6"/>
 <text x="1265" y="1575" font-size="17" fill="#73849a" font-weight="400" text-anchor="start">Déclenche</text>
 <rect x="1050" y="1810" width="400" height="80" rx="16" fill="#fff8ef" stroke="#edc291" stroke-width="1.5"/>
@@ -362,13 +362,14 @@
 <rect x="1500" y="1410" width="400" height="120" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#Amazon-Simple-Queue-Service" xlink:href="#Amazon-Simple-Queue-Service" x="1520" y="1432" width="60" height="60"/>
 <text x="1600" y="1453" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">SQS · Notification</text>
-<text x="1600" y="1485" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">CommandeCreee</text>
+<text x="1600" y="1485" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">CommandeCreee</text>
+<text x="1600" y="1512" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">+ ExpeditionTerminee</text>
 <rect x="1500" y="1610" width="400" height="150" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-Lambda" xlink:href="#AWS-Lambda" x="1520" y="1632" width="60" height="60"/>
 <text x="1600" y="1653" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">Lambda · Notification</text>
-<text x="1600" y="1685" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Confirmation email via SES</text>
+<text x="1600" y="1685" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Confirmation + expédition SES</text>
 <text x="1600" y="1712" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Idempotence : reçus SQL D1</text>
-<text x="1600" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; concurrence : 2</text>
+<text x="1600" y="1739" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; mapping SQS : max 2</text>
 <path d="M1700 1530V1610" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round" stroke-dasharray="7 6"/>
 <text x="1715" y="1575" font-size="17" fill="#73849a" font-weight="400" text-anchor="start">Déclenche</text>
 <rect x="1500" y="1810" width="400" height="80" rx="16" fill="#fff8ef" stroke="#edc291" stroke-width="1.5"/>
@@ -382,7 +383,7 @@
 <text x="104" y="1742" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Lambda : timeout 30 secondes</text>
 <text x="104" y="1769" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">SQS : visibilité 180 secondes</text>
 <text x="104" y="1796" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Échec partiel : message réessayé</text>
-<text x="104" y="1823" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Email : doublon rare possible</text>
+<text x="104" y="1823" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Email : doublon possible</text>
 <rect x="600" y="1930" width="850" height="40" rx="16" fill="#edf4ff" stroke="#c4d8f1" stroke-width="1.5"/>
 <text x="1025" y="1956" font-size="19" fill="#172b46" font-weight="400" text-anchor="middle">D1 → RDS privé : état, audit, outbox et reçus de déduplication</text>
 <rect x="1500" y="1915" width="400" height="65" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
@@ -408,7 +409,7 @@
 <text x="1140" y="2193" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">Lambda · migration</text>
 <text x="1140" y="2225" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Alembic + catalogue initial</text>
 <text x="1140" y="2252" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Compte SQL applicatif limité</text>
-<text x="1140" y="2279" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; timeout 120 s ; max 1</text>
+<text x="1140" y="2279" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">VPC privé ; timeout 120 secondes</text>
 <rect x="1520" y="2150" width="400" height="140" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#Amazon-RDS" xlink:href="#Amazon-RDS" x="1540" y="2172" width="60" height="60"/>
 <text x="1620" y="2193" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">RDS · D1</text>
@@ -421,7 +422,7 @@
 <path d="M1440 2220H1520" fill="none" stroke="#73849a" stroke-width="2.5" marker-end="url(#arrow)" stroke-linejoin="round"/>
 <text x="1448" y="2202" font-size="16" fill="#73849a" font-weight="400" text-anchor="start">SQL/TLS</text>
 <text x="80" y="2333" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Terraform provisionne les ressources et les archives. scripts/deploy_frontend.py publie le site dans S3 et invalide le cache CloudFront.</text>
-<text x="80" y="2360" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Les Lambdas métier écrivent leurs transitions et événements en base ; le publisher EC2 republie ensuite l’outbox vers SNS.</text>
+<text x="80" y="2360" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Migration : aucune concurrence réservée. Métier : SQL → outbox → publisher EC2 → SNS ; réservation Lambda désactivée.</text>
 <rect x="40" y="2420" width="1920" height="435" rx="16" fill="#f3f6fb" stroke="#dbe3ed" stroke-width="1.5"/>
 <text x="70" y="2462" font-size="22" fill="#ad5414" font-weight="700" text-anchor="start">05</text>
 <text x="120" y="2462" font-size="27" fill="#172b46" font-weight="700" text-anchor="start">Sécurité, supervision et budget</text>
@@ -430,7 +431,7 @@
 <use href="#Amazon-CloudWatch" xlink:href="#Amazon-CloudWatch" x="100" y="2562" width="60" height="60"/>
 <text x="180" y="2583" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">CloudWatch</text>
 <text x="180" y="2615" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Logs, métriques, DLQ, âge outbox</text>
-<text x="180" y="2642" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Alarmes → SNS → 3 destinataires</text>
+<text x="180" y="2642" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Alarmes → SNS → emails configurés</text>
 <rect x="705" y="2540" width="590" height="130" rx="16" fill="#fff" stroke="#dbe3ed" stroke-width="1.5"/>
 <use href="#AWS-CloudTrail" xlink:href="#AWS-CloudTrail" x="725" y="2562" width="60" height="60"/>
 <text x="805" y="2583" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">CloudTrail → S3 audit</text>
@@ -455,9 +456,9 @@
 <use href="#AWS-Budgets" xlink:href="#AWS-Budgets" x="1350" y="2722" width="60" height="60"/>
 <text x="1430" y="2743" font-size="23" fill="#172b46" font-weight="700" text-anchor="start">AWS Budgets</text>
 <text x="1430" y="2775" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Alerte mensuelle : 80 % de 20 USD</text>
-<text x="1430" y="2802" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">3 destinataires ; aucun plafond</text>
+<text x="1430" y="2802" font-size="18" fill="#52637a" font-weight="400" text-anchor="start">Emails configurés ; aucun plafond</text>
 <text x="60" y="2910" font-size="20" fill="#172b46" font-weight="700" text-anchor="start">Configuration dessinée : mode démo réduit ; ASG désiré=1, max=2 ; RDS Single-AZ ; un NAT dans une AZ.</text>
-<text x="60" y="2945" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Option high_availability=true : ASG min/désiré=2, max=4 ; RDS Multi-AZ ; un NAT par AZ. Les deux modes peuvent être facturés.</text>
+<text x="60" y="2945" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Option high_availability=true : ASG min/désiré=2, max=4 ; deux NAT ; RDS inchangé, sans haute disponibilité SQL.</text>
 <text x="60" y="2980" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">D1 est un renvoi logique vers le même RDS ; les sections sont des regroupements de flux, pas des frontières réseau supplémentaires.</text>
-<text x="60" y="3015" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Code Terraform validé, infrastructure non déployée. Sauvegardes RDS : 1 jour. Emballage et expédition simulés.</text>
-<text x="60" y="3050" font-size="17" fill="#52637a" font-weight="400" text-anchor="start">Logos officiels AWS · paquet du 31 juillet 2026 · Schéma vérifié le 28 octobre 2026.</text></g></svg>
+<text x="60" y="3015" font-size="19" fill="#52637a" font-weight="400" text-anchor="start">Schéma du code Terraform, déploiement AWS non attesté. Sauvegardes RDS : 1 jour. Emballage et expédition simulés.</text>
+<text x="60" y="3050" font-size="17" fill="#52637a" font-weight="400" text-anchor="start">Logos officiels AWS · paquet du 31 juillet 2026 · Schéma aligné sur le code le 29 octobre 2026.</text></g></svg>
