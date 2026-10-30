@@ -30,7 +30,7 @@ variable "project_name" {
 variable "high_availability" {
   type        = bool
   default     = false
-  description = "Two EC2 instances, RDS Multi-AZ and one NAT per AZ. False is a paid demo without HA."
+  description = "Two EC2 instances and one NAT per AZ. RDS remains Single-AZ in both modes; this is not full platform HA."
 }
 
 variable "sender_email" {

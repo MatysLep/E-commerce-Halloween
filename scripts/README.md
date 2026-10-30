@@ -6,7 +6,7 @@ Ces scripts se lancent depuis la racine avec l’environnement Python du projet.
 - `deploy_frontend.py` lit les sorties Terraform, téléverse la boutique dans S3 et demande à CloudFront d’actualiser son cache. Il remplace uniquement la configuration publique, sans secret.
 
 La publication utilise le profil `aws_profile` des sorties Terraform et compare l’identité STS au champ `aws_account_id`. Elle s’arrête avant les uploads si le compte ne correspond pas. Cela évite une erreur lorsque le profil par défaut du terminal appartient à un ancien compte.
-- `check_docs.py` vérifie qu’un `readme.md` existe dans chaque dossier source suivi ou non ignoré par Git.
+- `check_docs.py` vérifie qu’un `README.md` existe dans chaque dossier source suivi ou non ignoré par Git.
 - `generate_architecture.py` génère le schéma vectoriel de l’architecture hybride avec les logos officiels AWS. Il lit le mode haute disponibilité et le montant du budget dans `infrastructure/terraform.tfvars` s’il existe. La topologie est dessinée explicitement à partir du Terraform ; ce script ne découvre pas automatiquement de nouveaux services ajoutés au code.
 - `render_architecture.mjs` transforme ce SVG en PNG avec Sharp pour l’insérer dans le rapport ou la présentation.
 

@@ -1,6 +1,6 @@
 # Architecture cible d’industrialisation
 
-Proposition étudiée le 28 octobre 2026. Aucun service n’a été déployé. Le schéma représente une cible pour une activité commerciale soutenue et des pics saisonniers. La charge, les objectifs de disponibilité et le budget restent à chiffrer : cette cible est un compromis à valider, pas une preuve de conformité Well-Architected.
+Proposition étudiée le 28 octobre 2026. Cette cible d’industrialisation n’a pas été déployée ; elle est distincte des essais de la solution hybride. Le schéma représente une cible pour une activité commerciale soutenue et des pics saisonniers. La charge, les objectifs de disponibilité et le budget restent à chiffrer : cette cible est un compromis à valider, pas une preuve de conformité Well-Architected.
 
 ## Architecture retenue
 
@@ -55,7 +55,7 @@ Cognito propose la réplication multi-région, y compris Paris et Irlande, avec 
 | Optimisation des coûts | Coût par commande, right-sizing, rétentions adaptées, alertes et engagements seulement après mesure du socle stable. |
 | Développement durable | Graviton après validation de compatibilité, cache, compression, scaling et arrêt des environnements de test. |
 
-L’ajout de composants améliore certains objectifs mais augmente le coût et l’exploitation. Aurora Global Database avec des instances dans les deux régions, le cache, les publishers dédiés et Shield Advanced ne seraient pas proportionnés à une petite démonstration. Shield Advanced est un choix de protection premium assumé, à comparer à la perte métier possible : le tarif officiel consulté indique 3 000 USD/mois, avec engagement minimal d’un an et frais supplémentaires possibles. Le montant total de l’architecture n’est pas estimé sans trafic et dimensionnement.
+L’ajout de composants améliore certains objectifs mais augmente le coût et l’exploitation. Aurora Global Database avec des instances dans les deux régions, le cache, les publishers dédiés et Shield Advanced ne seraient pas proportionnés à une petite démonstration. Shield Advanced est un choix de protection premium assumé, à comparer à la perte métier possible : le tarif officiel consulté indique 3 000 USD/mois, avec engagement minimal d’un an et frais supplémentaires possibles. Les hypothèses de trafic, le dimensionnement et le chiffrage saisonnier sont présentés dans [l’estimation détaillée](estimation-industrialisation.md).
 
 MSK n’est pas ajouté à cette nouvelle cible : les besoins définis sont couverts par SNS/SQS, Aurora et l’archive S3. Un besoin concret de streaming, d’intégration Kafka ou de multiples consommateurs avec replay indépendant pourrait justifier une étude séparée.
 
@@ -73,6 +73,6 @@ MSK n’est pas ajouté à cette nouvelle cible : les besoins définis sont couv
 - [Shield : FAQ](https://aws.amazon.com/shield/faqs/)
 - [Coûts WAF et Shield Advanced](https://aws.amazon.com/blogs/aws-cloud-financial-management/how-to-estimate-your-aws-waf-and-aws-shield-advanced-costs/)
 - [AWS Well-Architected Framework](https://wa.aws.amazon.com/index.en.html)
-- [Icônes officielles AWS](https://aws.amazon.com/architecture/icons/) — paquet du 31 juillet 2026 ; SVG sélectionnés dans `icons/`.
+- [Icônes officielles AWS](https://aws.amazon.com/architecture/icons/) — paquet du 31 juillet 2026 ; symboles intégrés aux SVG conservés dans ce dossier.
 
-Le script `generate_warm_standby.py` produit le SVG à partir des icônes locales. Le PNG est rendu avec Sharp. Le schéma et ses connexions ont été vérifiés visuellement ; cette vérification ne remplace pas les essais d’une infrastructure déployée.
+Le SVG et le PNG de la cible sont conservés dans ce dossier. Leur générateur initial n’est pas inclus dans le dépôt ; le script `scripts/generate_architecture.py` ne régénère que le schéma hybride. Le schéma et ses connexions ont été vérifiés visuellement ; cette vérification ne remplace pas les essais d’une infrastructure déployée.

@@ -21,15 +21,15 @@ Terraform décrit les services à créer. `plan` propose les changements, `apply
 | `iam.tf` | Les permissions des serveurs et des Lambdas. |
 | `monitoring.tf` | Les alarmes et l’alerte de budget. |
 | `outputs.tf` | Les informations utiles après le déploiement. |
-| `architecture.tftest.hcl` | Les vérifications de configuration avec un AWS simulé. |
+| `architecture.tftest.hcl` | Les vérifications du mode réduit et de la redondance EC2/NAT avec un AWS simulé. |
 | `teardown.tftest.hcl` | Les vérifications du nettoyage complet et du mode protégé. |
 | `notifications.tftest.hcl` | Le routage des confirmations et expéditions vers la file de notification. |
 | `lambda_concurrency.tftest.hcl` | Les vérifications des limites Lambda pour les petits comptes et des réservations optionnelles. |
 | `.terraform.lock.hcl` | Les versions et empreintes des fournisseurs retenus. |
 
-Le choix `high_availability=false` lance une EC2, un NAT et un RDS sans standby. Il reste payant et n’assure pas la haute disponibilité. Avec `true`, le minimum passe à deux EC2, deux NAT et RDS Multi-AZ. L’ALB utilise deux zones dans les deux modes.
+Le choix `high_availability=false` lance une EC2, un NAT et un RDS sans standby. Il reste payant et n’assure pas la haute disponibilité. Avec `true`, le minimum passe à deux EC2 et deux NAT. RDS reste Single-AZ : cette option améliore la disponibilité du calcul et des sorties réseau, pas celle de la base. L’ALB utilise deux zones dans les deux modes.
 
-Pour RDS, le mode réduit utilise `db.t4g.micro`, 20 Gio de SSD `gp2`, aucune extension automatique du stockage, une rétention des sauvegardes d’un jour et aucun export des logs PostgreSQL vers CloudWatch. Le mode HA conserve `db.t4g.small`, `gp3`, une limite d’extension à 50 Gio et sept jours de sauvegardes. Dans les deux cas, RDS reste privé et chiffré, avec des secrets gérés. Un snapshot final est conservé uniquement si `deletion_protection=true`. Secrets Manager et les snapshots conservés peuvent être facturés séparément.
+Pour RDS, le mode réduit utilise `db.t4g.micro`, 20 Gio de SSD `gp2`, aucune extension automatique du stockage, une rétention des sauvegardes d’un jour et aucun export des logs PostgreSQL vers CloudWatch. Ces paramètres RDS sont identiques lorsque `high_availability=true`, conformément à `database.tf`. Dans les deux cas, RDS reste privé et chiffré, avec des secrets gérés. Un snapshot final est conservé uniquement si `deletion_protection=true`. Secrets Manager et les snapshots conservés peuvent être facturés séparément.
 
 Ces réglages réduisent la consommation et reprennent le dimensionnement de l’ancienne offre RDS gratuite. Ils ne garantissent pas la gratuité du compte : l’offre actuelle RDS utilise des crédits et l’éligibilité doit être vérifiée dans la facturation AWS. Voir [AWS RDS Free Tier](https://aws.amazon.com/rds/free/).
 

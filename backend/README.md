@@ -2,8 +2,8 @@
 
 Ce dossier contient le code Python exécuté sur le serveur. Il vérifie les commandes et enregistre les informations dans la base.
 
-- [`shop`](shop/readme.md) : l’API et la logique partagée avec les Lambdas.
-- [`migrations`](migrations/readme.md) : l’historique des changements de structure de la base.
+- [`shop`](shop/README.md) : l’API et la logique partagée avec les Lambdas.
+- [`migrations`](migrations/README.md) : l’historique des changements de structure de la base.
 
 Le même code métier est utilisé en local et sur AWS. On change les connexions et les points d’entrée, pas les règles de commande.
 

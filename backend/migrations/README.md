@@ -4,7 +4,7 @@ Une migration explique comment créer ou modifier des tables. Alembic mémorise 
 
 - `env.py` utilise la connexion fournie par l’outil d’administration.
 - `script.py.mako` est le modèle pour générer une nouvelle migration.
-- [`versions`](versions/readme.md) contient les changements numérotés.
+- [`versions`](versions/README.md) contient les changements numérotés.
 
 En local, `make init` applique les migrations et ajoute les produits manquants. Sur AWS, une Lambda d’administration les applique avant le démarrage de l’API. Un verrou PostgreSQL empêche deux migrations simultanées.
 

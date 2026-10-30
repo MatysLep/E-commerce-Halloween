@@ -14,8 +14,8 @@ Calculs réalisés dans AWS Pricing Calculator les 29 et 30 octobre 2026. Le sc�
 Les deux écrans du calculateur extrapolent chacun leur propre mois sur douze mois. Leurs colonnes « Total 12 months » ne représentent donc pas ce calendrier saisonnier : utiliser le calcul pondéré ci-dessus. Le maintien des sauvegardes et archives du pic peut aussi décaler une partie du coût sur le mois suivant.
 
 - [Estimation enregistrée du mois de pointe](https://calculator.aws/#/estimate?id=3d59fd6dae4e7c04fbe471766094c6224f968caf).
-- Scénario hors saison : configuré et vérifié dans l’onglet du calculateur, mais son lien public reste en attente de confirmation utilisateur. La revue automatique a refusé sa publication publique sur AWS.
-- `estimation-industrialisation-details.json` conserve les 43 lignes visibles de chaque scénario, leurs descriptions et leurs configurations. Ce fichier est une capture structurée du tableau, pas un export natif AWS ; la tentative d’export natif a bloqué.
+- Scénario hors saison : documenté par la capture et les données structurées ci-dessous ; aucun lien public n’est fourni.
+- `estimation-industrialisation-details.json` conserve les 43 lignes visibles de chaque scénario, leurs descriptions et leurs configurations. Ce fichier est une capture structurée du tableau, pas un export natif AWS.
 
 ## Capacité conservée et capacité saisonnière
 

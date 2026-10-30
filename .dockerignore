@@ -1,9 +1,12 @@
-.git
-.venv
-.env
-build
-node_modules
-*.db
-**/__pycache__
-infrastructure/.terraform
-infrastructure/*.tfstate*
+# Seuls ces fichiers sont nécessaires au Dockerfile
+**
+!Dockerfile
+!requirements.txt
+!backend/
+!backend/**
+!frontend/
+!frontend/**
+**/__pycache__/
+**/*.pyc
+**/README.md
+frontend/config.local.js

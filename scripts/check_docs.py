@@ -1,4 +1,4 @@
-"""Require a readme.md in every source folder (generated/ignored folders excluded)."""
+"""Require a README.md in every source folder (generated/ignored folders excluded)."""
 
 import subprocess
 from pathlib import Path
@@ -23,8 +23,8 @@ for name in files:
 missing = [
     str(path.relative_to(ROOT))
     for path in sorted(directories)
-    if not (path / "readme.md").is_file()
+    if not (path / "README.md").is_file()
 ]
 if missing:
-    raise SystemExit(f"Missing readme.md: {', '.join(missing)}")
+    raise SystemExit(f"Missing README.md: {', '.join(missing)}")
 print(f"Documentation present in {len(directories)} source directories.")

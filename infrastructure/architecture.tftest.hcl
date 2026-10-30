@@ -75,20 +75,20 @@ run "demo_plan" {
   }
 }
 
-run "high_availability_plan" {
+run "compute_redundancy_plan" {
   command = plan
   variables { high_availability = true }
   assert {
     condition = (
-      aws_db_instance.main.instance_class == "db.t4g.small" &&
-      aws_db_instance.main.storage_type == "gp3" &&
-      aws_db_instance.main.max_allocated_storage == 50 &&
-      aws_db_instance.main.backup_retention_period == 7
+      aws_db_instance.main.instance_class == "db.t4g.micro" &&
+      aws_db_instance.main.storage_type == "gp2" &&
+      aws_db_instance.main.max_allocated_storage == 0 &&
+      aws_db_instance.main.backup_retention_period == 1
     )
-    error_message = "The optional paid HA profile must retain its database capacity and seven-day backups."
+    error_message = "Compute redundancy must preserve the reduced database profile; SQL HA is not implemented."
   }
   assert {
-    condition     = aws_autoscaling_group.api.min_size == 2 && aws_db_instance.main.multi_az && length(aws_nat_gateway.main) == 2
-    error_message = "HA requires two API instances, Multi-AZ RDS and one NAT per AZ."
+    condition     = aws_autoscaling_group.api.min_size == 2 && !aws_db_instance.main.multi_az && length(aws_nat_gateway.main) == 2
+    error_message = "Compute redundancy requires two API instances and one NAT per AZ; RDS remains Single-AZ."
   }
 }

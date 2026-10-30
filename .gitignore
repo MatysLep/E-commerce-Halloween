@@ -1,18 +1,46 @@
+# Système et éditeurs
 .DS_Store
+Thumbs.db
+*.swp
+*~
+~$*.docx
+
+# Python et contrôles locaux
 .venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
-*.pyc
-.env
-*.db
-.terraform/
-*.tfstate*
-*.tfplan
-terraform.tfvars
-build/
 *.egg-info/
 coverage.xml
 .coverage
+htmlcov/
+
+# Configuration et données locales
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+*.sqlite*
+.aws/
+*.pem
+*.key
 frontend/config.local.js
+
+# Terraform — conserver .terraform.lock.hcl
+.terraform/
+*.tfstate*
+*.tfplan
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+crash.log
+crash.*.log
+
+# Dépendances et livrables reconstruits
 node_modules/
+build/
+
+Rapport.docx
