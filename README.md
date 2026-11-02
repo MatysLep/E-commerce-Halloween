@@ -1,6 +1,6 @@
-# Minuit — E-commerce Halloween
+# Minuit - E-commerce Halloween
 
-Boutique pédagogique réalisée à **IMT Nord Europe**, dans le module **Infrastructures cloud et virtualisation — FISA TI 2027**.
+Boutique pédagogique réalisée à **IMT Nord Europe**, dans le module **Infrastructures cloud et virtualisation - FISA TI 2027**.
 
 **Équipe :** Bahir Boudouma Lambarki, Tarik Fellahi et Matys Lepretre.
 
