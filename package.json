@@ -3,14 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "diagram:svg": ".venv/bin/python scripts/generate_architecture.py",
-    "diagram": "npm run diagram:svg && node scripts/render_architecture.mjs",
     "test": "node --test tests/cart.test.mjs",
     "format": "prettier --write frontend tests/cart.test.mjs",
     "format:check": "prettier --check frontend tests/cart.test.mjs"
   },
   "devDependencies": {
-    "prettier": "3.6.2",
-    "sharp": "0.35.5"
+    "prettier": "3.6.2"
   }
 }

@@ -43,4 +43,10 @@ crash.*.log
 node_modules/
 build/
 
-Rapport.docx
+# Fichiers de travail locaux
+.local-archive/
+.codex/
+.agents/
+AGENTS.md
+~$*.pptx
+~$*.xlsx

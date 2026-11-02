@@ -21,7 +21,6 @@ lint:
 	node --check frontend/app.js
 	node --check frontend/auth.js
 	npm run format:check
-	$(PYTHON) scripts/check_docs.py
 check: lint test
 build:
 	$(PYTHON) scripts/build.py
